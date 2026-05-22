@@ -358,7 +358,6 @@ const SHORT        = ['Juan', 'Alhvi', 'Martín', 'Álvaro', 'Ricky', 'Canche', 
 
 const API_BASE = 'https://api.wc2026api.com';
 const API_KEY  = 'wc26_XkWhnmn6apUpGmpPYendFN';
-const POLL_MS  = 600000;
 
 // ISO 3166-1 alpha-2 codes for flagcdn.com
 const FLAGS = {
@@ -799,7 +798,6 @@ function showView(view){
 buildUI();
 renderLb();
 fetchScores();
-setInterval(fetchScores, POLL_MS);
 </script>
 </body>
 </html>
