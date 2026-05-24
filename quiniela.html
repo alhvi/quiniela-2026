@@ -562,9 +562,43 @@ MATCHES.forEach(m => { MATCH_KEY[m.home+'|'+m.away] = m.id; });
 
 function resolveTeam(name){ return EN_TO_ES[name] || name; }
 
+function applyScores(data){
+  const list = Array.isArray(data) ? data : (data.matches || data.data || []);
+  list.forEach(m => {
+    const homeEs = resolveTeam(m.home_team || m.home);
+    const awayEs = resolveTeam(m.away_team || m.away);
+    const mid = MATCH_KEY[homeEs+'|'+awayEs];
+    if(!mid) return;
+    const status = (m.status || '').toLowerCase();
+    const h = m.home_score ?? m.score_home ?? null;
+    const a = m.away_score ?? m.score_away ?? null;
+    apiScores[mid] = (h !== null && a !== null)
+      ? { h: parseInt(h), a: parseInt(a), status }
+      : { h: null, a: null, status };
+  });
+  refreshAllCards();
+  renderLb();
+}
+
+const CACHE_KEY = 'q2026_scores';
+const CACHE_TTL = 5 * 60 * 1000; // 5 minutos
+
 async function fetchScores(){
   const dot = document.getElementById('apiDot');
   const msg = document.getElementById('apiStatus');
+
+  // Verificar caché
+  try {
+    const cached = JSON.parse(localStorage.getItem(CACHE_KEY) || 'null');
+    if(cached && (Date.now() - cached.ts) < CACHE_TTL){
+      const age = Math.floor((Date.now() - cached.ts) / 1000);
+      applyScores(cached.data);
+      dot.className = 'api-dot ok';
+      msg.textContent = `Resultados actualizados (caché ${age}s)`;
+      return;
+    }
+  } catch(_){}
+
   dot.className = 'api-dot loading';
 
   try {
@@ -573,35 +607,14 @@ async function fetchScores(){
     });
     if(!res.ok) throw new Error(`HTTP ${res.status}`);
     const data = await res.json();
+    try { localStorage.setItem(CACHE_KEY, JSON.stringify({ ts: Date.now(), data })); } catch(_){}
 
-    // data may be array directly or { matches: [...] }
-    const list = Array.isArray(data) ? data : (data.matches || data.data || []);
-
-    list.forEach(m => {
-      const homeEs = resolveTeam(m.home_team || m.home);
-      const awayEs = resolveTeam(m.away_team || m.away);
-      const mid = MATCH_KEY[homeEs+'|'+awayEs];
-      if(!mid) return;
-
-      const status = (m.status || '').toLowerCase();
-      const h = m.home_score ?? m.score_home ?? null;
-      const a = m.away_score ?? m.score_away ?? null;
-
-      if(h !== null && a !== null){
-        apiScores[mid] = { h: parseInt(h), a: parseInt(a), status };
-      } else {
-        apiScores[mid] = { h: null, a: null, status };
-      }
-    });
-
+    applyScores(data);
     const live = Object.values(apiScores).filter(s => s.status === 'in_progress' || s.status === 'live').length;
     dot.className = 'api-dot ok';
     msg.textContent = live > 0
-      ? `🔴 ${live} partido${live>1?'s':''} en vivo · actualiza cada minuto`
+      ? `🔴 ${live} partido${live>1?'s':''} en vivo`
       : 'Resultados actualizados';
-
-    refreshAllCards();
-    renderLb();
   } catch(e) {
     dot.className = 'api-dot err';
     msg.textContent = `Sin conexión con la API · ${e.message}`;
