@@ -2,13 +2,13 @@
 
 Seguimiento de quinielas para la fase de grupos del Mundial 2026 (72 partidos, 11–27 jun).
 
-**Live:** https://alhvi.github.io/quiniela-2026/quiniela.html
+**Live:** https://alhvi.github.io/quiniela-2026/
 
 ## Archivo
 
 | Archivo | Descripción |
 |---|---|
-| `quiniela.html` | App mobile-first, tarjetas por partido, vista por fecha / por grupo |
+| `index.html` | App mobile-first, tarjetas por partido, vista por fecha / por grupo |
 
 ## Participantes (en orden en el array PREDICTIONS)
 
@@ -65,11 +65,11 @@ GET /test/match   → partido ficticio para dev (cicla por todas las fases en ti
 
 ### Mapeo de nombres (inglés API → español)
 
-El objeto `EN_TO_ES` en `quiniela.html` cubre todos los equipos verificados contra la API. Nombres no estándar ya mapeados: `Korea Republic`, `Bosnia-Herzegovina`, `IR Iran`.
+El objeto `EN_TO_ES` en `index.html` cubre todos los equipos verificados contra la API. Nombres no estándar ya mapeados: `Korea Republic`, `Bosnia-Herzegovina`, `IR Iran`.
 
 ## Notas técnicas
 
-- Polling cada 10 minutos (`POLL_MS = 600000`) + fetch al cargar la página
+- Fetch al cargar la página (sin polling automático), caché localStorage 5 min
 - Horarios en tiempo de Guatemala (UTC-6), hardcodeados desde la API
 - Partidos ordenados por hora dentro de cada fecha
 - Banderas vía `flagcdn.com/h40/{iso-code}.png`
