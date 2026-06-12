@@ -809,6 +809,18 @@ function showView(view){
 }
 
 buildUI();
+
+// Seleccionar la fecha de hoy por default
+(function(){
+  const months = ['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'];
+  const now = new Date();
+  const todayStr = `${now.getDate()} ${months[now.getMonth()]}`;
+  const dates = [...new Set(MATCHES.map(m=>m.date))];
+  if(dates.includes(todayStr)){
+    switchTab(todayStr, 'fecha-tabs', 'fecha-panels');
+  }
+})();
+
 renderLb();
 fetchScores();
 </script>
