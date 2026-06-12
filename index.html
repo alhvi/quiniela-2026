@@ -905,6 +905,7 @@ function switchTab(t, tabsId, panelsId){
     el.classList.toggle('active', el.id===pid));
   const active=document.querySelector(`#${tabsId} .tab[data-tab="${t}"]`);
   if(active) active.scrollIntoView({behavior:'smooth',block:'nearest',inline:'center'});
+  saveTabState();
 }
 
 // ── View toggle ──
@@ -914,18 +915,36 @@ function showView(view){
   document.getElementById('grupo-tabs').style.display   = view==='grupo'?'flex':'none';
   document.getElementById('fecha-panels').style.display = view==='fecha'?'block':'none';
   document.getElementById('grupo-panels').style.display = view==='grupo'?'block':'none';
+  saveTabState();
+}
+
+function saveTabState(){
+  const v = document.querySelector('.view-btn.active');
+  const f = document.querySelector('#fecha-tabs .tab.active');
+  const g = document.querySelector('#grupo-tabs .tab.active');
+  sessionStorage.setItem('q2026_tab', JSON.stringify({
+    view: v?.dataset.view ?? 'fecha',
+    fechaTab: f?.dataset.tab ?? null,
+    grupoTab: g?.dataset.tab ?? null,
+  }));
 }
 
 buildUI();
 
-// Seleccionar la fecha de hoy por default
+// Restaurar tab guardado, o seleccionar hoy si es la primera carga del día
 (function(){
-  const months = ['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'];
-  const now = new Date();
-  const todayStr = `${now.getDate()} ${months[now.getMonth()]}`;
-  const dates = [...new Set(MATCHES.map(m=>m.date))];
-  if(dates.includes(todayStr)){
-    switchTab(todayStr, 'fecha-tabs', 'fecha-panels');
+  const saved = JSON.parse(sessionStorage.getItem('q2026_tab') || 'null');
+  if(saved){
+    if(saved.view && saved.view !== 'fecha') showView(saved.view);
+    if(saved.fechaTab) switchTab(saved.fechaTab, 'fecha-tabs', 'fecha-panels');
+    if(saved.grupoTab) switchTab(saved.grupoTab, 'grupo-tabs', 'grupo-panels');
+  } else {
+    const months=['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'];
+    const now=new Date();
+    const todayStr=`${now.getDate()} ${months[now.getMonth()]}`;
+    if([...new Set(MATCHES.map(m=>m.date))].includes(todayStr)){
+      switchTab(todayStr,'fecha-tabs','fecha-panels');
+    }
   }
 })();
 
