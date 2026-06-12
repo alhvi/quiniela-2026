@@ -915,6 +915,15 @@ function showView(view){
   document.getElementById('grupo-tabs').style.display   = view==='grupo'?'flex':'none';
   document.getElementById('fecha-panels').style.display = view==='fecha'?'block':'none';
   document.getElementById('grupo-panels').style.display = view==='grupo'?'block':'none';
+  if(view==='fecha'){
+    const months=['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'];
+    const now=new Date();
+    const todayStr=`${now.getDate()} ${months[now.getMonth()]}`;
+    if([...new Set(MATCHES.map(m=>m.date))].includes(todayStr)){
+      switchTab(todayStr,'fecha-tabs','fecha-panels');
+      return;
+    }
+  }
   saveTabState();
 }
 
