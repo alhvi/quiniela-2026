@@ -697,7 +697,7 @@ function buildCard(match){
   const aDisplay = hasScore ? real.a : '–';
 
   return `
-    <div class="match-card" id="card-${match.id}">
+    <div class="match-card" data-mid="${match.id}">
       <div class="card-meta">
         <span>${match.date} · ${match.time}</span>
         <span class="group-badge">Grupo ${match.group}</span>
@@ -728,12 +728,11 @@ function buildCard(match){
 
 function refreshAllCards(){
   MATCHES.forEach(m=>{
-    const card=document.getElementById('card-'+m.id);
-    if(!card) return;
-    const tempDiv=document.createElement('div');
-    tempDiv.innerHTML=buildCard(m);
-    const newCard=tempDiv.firstElementChild;
-    card.replaceWith(newCard);
+    document.querySelectorAll(`[data-mid="${m.id}"]`).forEach(card=>{
+      const tmp=document.createElement('div');
+      tmp.innerHTML=buildCard(m);
+      card.replaceWith(tmp.firstElementChild);
+    });
   });
 }
 
