@@ -301,6 +301,50 @@
   .pred-item.exact  .pred-badge { color: #3fb950; }
   .pred-item.result .pred-badge { color: #e8b84b; }
 
+  /* ── GROUP STANDINGS ── */
+  .group-standings {
+    background: #161b22;
+    border-radius: 10px;
+    margin-bottom: 12px;
+    overflow: hidden;
+    border: 1px solid #21262d;
+  }
+  .gs-title {
+    background: #21262d;
+    padding: 6px 12px;
+    font-size: 0.7em;
+    color: #8b949e;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+  }
+  .gs-table { width: 100%; border-collapse: collapse; }
+  .gs-table th {
+    padding: 4px 5px;
+    font-size: 0.62em;
+    color: #484f58;
+    font-weight: 700;
+    text-align: center;
+    text-transform: uppercase;
+    border-bottom: 1px solid #30363d;
+  }
+  .gs-table th.gs-th-team { text-align: left; padding-left: 8px; }
+  .gs-table td {
+    padding: 6px 5px;
+    font-size: 0.74em;
+    color: #c9d1d9;
+    text-align: center;
+    border-bottom: 1px solid #1a1f27;
+  }
+  .gs-table tr:last-child td { border-bottom: none; }
+  .gs-pos { color: #484f58; width: 18px; }
+  .gs-td-team { text-align: left !important; padding-left: 8px !important; font-weight: 600; color: #e6edf3; }
+  .gs-td-team-inner { display: flex; align-items: center; gap: 5px; }
+  .gs-flag { height: 14px; border-radius: 2px; flex-shrink: 0; }
+  .gs-pts { font-weight: 800; color: #e6edf3; }
+  .gs-qual td { border-left: none; }
+  .gs-qual td.gs-pos { border-left: 3px solid #1a3a8f; padding-left: 5px; }
+
   /* ── API STATUS BAR ── */
   .api-bar {
     background: #161b22;
@@ -734,6 +778,59 @@ function refreshAllCards(){
       card.replaceWith(tmp.firstElementChild);
     });
   });
+  document.querySelectorAll('[data-group-standings]').forEach(el=>{
+    el.innerHTML = buildGroupStandingsInner(el.dataset.groupStandings);
+  });
+}
+
+function buildGroupStandingsInner(group){
+  const matches = MATCHES.filter(m=>m.group===group);
+  const teams = {};
+  matches.forEach(m=>{
+    if(!teams[m.home]) teams[m.home]={pj:0,g:0,e:0,p:0,gf:0,gc:0};
+    if(!teams[m.away]) teams[m.away]={pj:0,g:0,e:0,p:0,gf:0,gc:0};
+  });
+  matches.forEach(m=>{
+    const r=apiScores[m.id];
+    if(!r||r.h===null) return;
+    const h=teams[m.home], a=teams[m.away];
+    h.pj++; a.pj++;
+    h.gf+=r.h; h.gc+=r.a;
+    a.gf+=r.a; a.gc+=r.h;
+    if(r.h>r.a){h.g++;a.p++;}
+    else if(r.h<r.a){a.g++;h.p++;}
+    else{h.e++;a.e++;}
+  });
+  const sorted=Object.entries(teams)
+    .map(([name,t])=>({name,...t}))
+    .sort((a,b)=>{
+      const pa=a.g*3+a.e, pb=b.g*3+b.e;
+      if(pb!==pa) return pb-pa;
+      const da=a.gf-a.gc, db=b.gf-b.gc;
+      if(db!==da) return db-da;
+      return b.gf-a.gf;
+    });
+  const rows=sorted.map((t,i)=>{
+    const pts=t.g*3+t.e;
+    const fCode=FLAGS[t.name];
+    const fHtml=fCode?`<img src="https://flagcdn.com/h20/${fCode}.png" class="gs-flag" alt="">`:'';
+    return `<tr class="${i<2?'gs-qual':''}">
+      <td class="gs-pos">${i+1}</td>
+      <td class="gs-td-team"><div class="gs-td-team-inner">${fHtml}<span>${t.name}</span></div></td>
+      <td>${t.pj}</td><td>${t.g}</td><td>${t.e}</td><td>${t.p}</td>
+      <td>${t.gf}:${t.gc}</td>
+      <td class="gs-pts">${pts}</td>
+    </tr>`;
+  }).join('');
+  return `
+    <div class="gs-title">Posiciones · Grupo ${group}</div>
+    <table class="gs-table">
+      <thead><tr>
+        <th></th><th class="gs-th-team">Equipo</th>
+        <th>PJ</th><th>G</th><th>E</th><th>P</th><th>GF:GC</th><th>Pts</th>
+      </tr></thead>
+      <tbody>${rows}</tbody>
+    </table>`;
 }
 
 // ── Build tabs + panels ──
@@ -786,6 +883,18 @@ function buildUI(){
       return {main:t, sub:'Grupo', cnt:cnt===1?'1 partido':`${cnt} partidos`};
     }
   );
+
+  // Insertar tabla de posiciones al inicio de cada panel de grupo
+  groups.forEach(g=>{
+    const pid='pan-grupo-tabs-'+g;
+    const panel=document.getElementById(pid);
+    if(!panel) return;
+    const div=document.createElement('div');
+    div.className='group-standings';
+    div.dataset.groupStandings=g;
+    div.innerHTML=buildGroupStandingsInner(g);
+    panel.insertBefore(div, panel.firstChild);
+  });
 }
 
 function switchTab(t, tabsId, panelsId){
