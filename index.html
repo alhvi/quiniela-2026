@@ -290,7 +290,7 @@
   .pred-item.result { border-color: rgba(232,184,75,0.3); background: rgba(232,184,75,0.07); }
   .pred-item.miss   { background: #1c2128; }
 
-  .pred-pname { font-size: 0.85em; color: #8b949e; flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .pred-pname { font-size: 0.92em; color: #8b949e; flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .pred-sc    { font-size: 0.92em; font-weight: 700; color: #e6edf3; white-space: nowrap; }
 
   .pred-item.exact  .pred-sc { color: #3fb950; }
@@ -869,7 +869,9 @@ function buildUI(){
       if(t==='Todos') return {main:'Todos',sub:'',cnt:''};
       const [day,mon]=t.split(' ');
       const cnt=MATCHES.filter(m=>m.date===t).length;
-      return {main:day, sub:mon, cnt:cnt===1?'1 partido':`${cnt} partidos`};
+      const mIdx=['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'].indexOf(mon);
+      const dow=['Dom','Lun','Mar','Mié','Jue','Vie','Sáb'][new Date(2026,mIdx,parseInt(day)).getDay()];
+      return {main:day, sub:`${dow} · ${mon}`, cnt:cnt===1?'1 partido':`${cnt} partidos`};
     }
   );
 
