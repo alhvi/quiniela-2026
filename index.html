@@ -871,7 +871,7 @@ function buildUI(){
       const cnt=MATCHES.filter(m=>m.date===t).length;
       const mIdx=['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'].indexOf(mon);
       const dow=['Dom','Lun','Mar','Mié','Jue','Vie','Sáb'][new Date(2026,mIdx,parseInt(day)).getDay()];
-      return {main:day, sub:`${dow} · ${mon}`, cnt:cnt===1?'1 partido':`${cnt} partidos`};
+      return {main:day, sub:dow.toUpperCase(), cnt:cnt===1?'1 partido':`${cnt} partidos`};
     }
   );
 
