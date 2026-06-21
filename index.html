@@ -80,11 +80,11 @@
   .rank-3 .lb-num { color: #cd7f32; }
 
   .lb-info { flex: 1; }
-  .lb-name   { font-size: 0.9em; font-weight: 600; }
-  .lb-detail { font-size: 0.72em; color: #8b949e; margin-top: 1px; }
+  .lb-name   { font-size: 1em; font-weight: 600; }
+  .lb-detail { font-size: 0.8em; color: #8b949e; margin-top: 1px; }
 
-  .lb-pts { font-size: 1em; font-weight: 800; color: #3fb950; text-align: right; min-width: 60px; }
-  .lb-pts span { font-size: 0.6em; color: #8b949e; font-weight: 400; display: block; }
+  .lb-pts { font-size: 1.1em; font-weight: 800; color: #3fb950; text-align: right; min-width: 60px; }
+  .lb-pts span { font-size: 0.68em; color: #8b949e; font-weight: 400; display: block; }
 
   /* ── VIEW TOGGLE ── */
   .view-toggle {
@@ -147,8 +147,8 @@
     transition: all 0.15s;
   }
   .tab .t-main { font-size: 1.2em; font-weight: 800; color: #e6edf3; line-height: 1; }
-  .tab .t-sub  { font-size: 0.6em; color: #8b949e; text-transform: uppercase; letter-spacing: 0.5px; margin-top: 2px; }
-  .tab .t-cnt  { font-size: 0.58em; color: #484f58; margin-top: 2px; }
+  .tab .t-sub  { font-size: 0.68em; color: #8b949e; text-transform: uppercase; letter-spacing: 0.5px; margin-top: 2px; }
+  .tab .t-cnt  { font-size: 0.65em; color: #6e7681; margin-top: 2px; }
 
   .tab-todos { font-size: 0.82em; font-weight: 700; color: #8b949e; padding: 8px 14px; min-width: auto; }
 
@@ -174,7 +174,7 @@
   .card-meta {
     background: #21262d;
     padding: 7px 14px;
-    font-size: 0.72em;
+    font-size: 0.82em;
     color: #8b949e;
     display: flex;
     justify-content: space-between;
@@ -213,7 +213,7 @@
   @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.5} }
 
   .card-teams {
-    font-size: 0.95em;
+    font-size: 1.05em;
     font-weight: 700;
     text-align: center;
     padding: 12px 12px 6px;
@@ -249,9 +249,9 @@
     box-shadow: 0 1px 3px rgba(0,0,0,0.4);
   }
   .score-display {
-    width: 58px;
-    height: 58px;
-    font-size: 1.6em;
+    width: 64px;
+    height: 64px;
+    font-size: 1.8em;
     font-weight: 800;
     text-align: center;
     background: #0d1117;
@@ -264,15 +264,15 @@
   }
   .score-display.has-score { border-color: #3fb950; }
   .score-display.live-score { border-color: #cc2020; }
-  .score-dash { font-size: 1.4em; color: #8b949e; font-weight: 300; }
+  .score-dash { font-size: 1.6em; color: #8b949e; font-weight: 300; }
 
   /* ── PREDICTIONS ── */
   .preds-section { border-top: 1px solid #21262d; padding: 10px 12px; }
   .preds-title {
-    font-size: 0.68em;
+    font-size: 0.78em;
     text-transform: uppercase;
     letter-spacing: 0.8px;
-    color: #484f58;
+    color: #6e7681;
     margin-bottom: 7px;
   }
   .preds-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 5px; }
@@ -288,16 +288,17 @@
   }
   .pred-item.exact  { border-color: rgba(63,185,80,0.3);  background: rgba(63,185,80,0.07);  }
   .pred-item.result { border-color: rgba(232,184,75,0.3); background: rgba(232,184,75,0.07); }
-  .pred-item.miss   { opacity: 0.5; }
+  .pred-item.miss   { background: #1c2128; }
 
-  .pred-pname { font-size: 0.78em; color: #8b949e; flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .pred-sc    { font-size: 0.82em; font-weight: 700; color: #e6edf3; white-space: nowrap; }
+  .pred-pname { font-size: 0.85em; color: #8b949e; flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .pred-sc    { font-size: 0.92em; font-weight: 700; color: #e6edf3; white-space: nowrap; }
 
   .pred-item.exact  .pred-sc { color: #3fb950; }
   .pred-item.result .pred-sc { color: #e8b84b; }
   .pred-item.miss   .pred-sc { color: #6e7681; }
+  .pred-item.miss   .pred-pname { color: #6e7681; }
 
-  .pred-badge { font-size: 0.7em; font-weight: 700; color: #8b949e; min-width: 20px; text-align: right; }
+  .pred-badge { font-size: 0.78em; font-weight: 700; color: #8b949e; min-width: 20px; text-align: right; }
   .pred-item.exact  .pred-badge { color: #3fb950; }
   .pred-item.result .pred-badge { color: #e8b84b; }
 
@@ -312,7 +313,7 @@
   .gs-title {
     background: #21262d;
     padding: 6px 12px;
-    font-size: 0.7em;
+    font-size: 0.78em;
     color: #8b949e;
     font-weight: 700;
     text-transform: uppercase;
@@ -321,8 +322,8 @@
   .gs-table { width: 100%; border-collapse: collapse; }
   .gs-table th {
     padding: 4px 5px;
-    font-size: 0.62em;
-    color: #484f58;
+    font-size: 0.7em;
+    color: #6e7681;
     font-weight: 700;
     text-align: center;
     text-transform: uppercase;
@@ -330,17 +331,17 @@
   }
   .gs-table th.gs-th-team { text-align: left; padding-left: 8px; }
   .gs-table td {
-    padding: 6px 5px;
-    font-size: 0.74em;
+    padding: 7px 5px;
+    font-size: 0.83em;
     color: #c9d1d9;
     text-align: center;
     border-bottom: 1px solid #1a1f27;
   }
   .gs-table tr:last-child td { border-bottom: none; }
-  .gs-pos { color: #484f58; width: 18px; }
+  .gs-pos { color: #6e7681; width: 18px; }
   .gs-td-team { text-align: left !important; padding-left: 8px !important; font-weight: 600; color: #e6edf3; }
   .gs-td-team-inner { display: flex; align-items: center; gap: 5px; }
-  .gs-flag { height: 14px; border-radius: 2px; flex-shrink: 0; }
+  .gs-flag { height: 16px; border-radius: 2px; flex-shrink: 0; }
   .gs-pts { font-weight: 800; color: #e6edf3; }
   .gs-qual td { border-left: none; }
   .gs-qual td.gs-pos { border-left: 3px solid #1a3a8f; padding-left: 5px; }
@@ -350,13 +351,13 @@
     background: #161b22;
     border-bottom: 1px solid #30363d;
     padding: 6px 16px;
-    font-size: 0.72em;
+    font-size: 0.82em;
     color: #8b949e;
     display: flex;
     align-items: center;
     gap: 8px;
   }
-  .api-dot { width: 7px; height: 7px; border-radius: 50%; background: #484f58; flex-shrink: 0; }
+  .api-dot { width: 8px; height: 8px; border-radius: 50%; background: #6e7681; flex-shrink: 0; }
   .api-dot.ok { background: #3fb950; }
   .api-dot.err { background: #cc2020; }
   .api-dot.loading { background: #e8b84b; animation: pulse 1s infinite; }
