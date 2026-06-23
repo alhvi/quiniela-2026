@@ -695,10 +695,18 @@ function renderLb(){
   const totals=getTotals();
   const ranked=PARTICIPANTS.map((name,i)=>({name,...totals[i]}))
     .sort((a,b)=>b.pts-a.pts||b.exact-a.exact);
-  const medals=['🥇','🥈','🥉'];
-  document.getElementById('lbList').innerHTML=ranked.map((p,r)=>`
-    <div class="lb-row rank-${r+1}">
-      <div class="lb-num">${medals[r]||r+1}</div>
+  const medals={1:'🥇',2:'🥈',3:'🥉'};
+  let rank=1;
+  const withRank=ranked.map((p,i)=>{
+    if(i>0){
+      const prev=ranked[i-1];
+      if(p.pts!==prev.pts||p.exact!==prev.exact) rank=i+1;
+    }
+    return {...p,rank};
+  });
+  document.getElementById('lbList').innerHTML=withRank.map(p=>`
+    <div class="lb-row rank-${p.rank}">
+      <div class="lb-num">${medals[p.rank]||p.rank}</div>
       <div class="lb-info">
         <div class="lb-name">${p.name}</div>
         <div class="lb-detail">✅ ${p.exact} marcador exacto · 🟡 ${p.result} resultado</div>
