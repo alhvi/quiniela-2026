@@ -226,6 +226,8 @@
   .team-name.home { text-align: right; }
   .team-name.away { text-align: left; }
   .vs { color: #8b949e; font-size: 0.8em; font-weight: 400; flex-shrink: 0; }
+  #fecha-panels [data-goto-group] { cursor: pointer; }
+  #fecha-panels [data-goto-group]:hover { opacity: 0.7; }
 
   /* ── SCORE DISPLAY ── */
   .card-score-row {
@@ -757,19 +759,19 @@ function buildCard(match){
         ${statusBadge}
       </div>
       <div class="card-teams">
-        <span class="team-name home">${match.home}</span>
+        <span class="team-name home" data-goto-group="${match.group}">${match.home}</span>
         <span class="vs">vs</span>
-        <span class="team-name away">${match.away}</span>
+        <span class="team-name away" data-goto-group="${match.group}">${match.away}</span>
       </div>
       <div class="card-score-row">
         <div class="score-side">
-          ${fh}
+          <span data-goto-group="${match.group}">${fh}</span>
           <div class="score-display ${scoreClass}">${hDisplay}</div>
         </div>
         <span class="score-dash">–</span>
         <div class="score-side">
           <div class="score-display ${scoreClass}">${aDisplay}</div>
-          ${fa}
+          <span data-goto-group="${match.group}">${fa}</span>
         </div>
       </div>
       <div class="preds-section">
@@ -967,6 +969,13 @@ buildUI();
     }
   }
 })();
+
+document.getElementById('fecha-panels').addEventListener('click', function(e){
+  const el = e.target.closest('[data-goto-group]');
+  if(!el) return;
+  showView('grupo');
+  switchTab(el.dataset.gotoGroup, 'grupo-tabs', 'grupo-panels');
+});
 
 renderLb();
 fetchScores();
