@@ -60,20 +60,20 @@
 
   .team-row { display: flex; gap: 6px; align-items: stretch; }
   .team-row + .team-row { margin-top: 6px; }
-  .team-btn {
+  .team-disp {
     flex: 1; min-width: 0;
     display: flex; align-items: center; gap: 10px;
     background: #f6f8fa; border: 2px solid #d0d7de; border-radius: 9px;
     padding: 11px 12px; color: #1f2328; font-size: 1em; font-weight: 600;
-    cursor: pointer; text-align: left; transition: all .12s;
+    text-align: left; transition: all .12s;
   }
-  .team-btn img { width: 30px; height: 21px; border-radius: 3px; flex-shrink: 0; object-fit: cover; }
-  .team-btn .tn { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-  .team-btn .pick-mark { font-size: 1.1em; opacity: 0; flex-shrink: 0; color: #1a7f37; }
-  .team-btn.sel { border-color: #2da44e; background: #dafbe1; color: #0a3322; }
-  .team-btn.sel .pick-mark { opacity: 1; }
-  .team-btn.tbd { opacity: 0.55; pointer-events: none; }
-  .team-btn .tn.placeholder { color: #8c959f; font-style: italic; font-weight: 500; }
+  .team-disp img { width: 30px; height: 21px; border-radius: 3px; flex-shrink: 0; object-fit: cover; }
+  .team-disp .tn { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .team-disp .pick-mark { font-size: 1.1em; opacity: 0; flex-shrink: 0; color: #1a7f37; }
+  .team-disp.sel { border-color: #2da44e; background: #dafbe1; color: #0a3322; }
+  .team-disp.sel .pick-mark { opacity: 1; }
+  .team-disp.tbd { opacity: 0.55; }
+  .team-disp .tn.placeholder { color: #8c959f; font-style: italic; font-weight: 500; }
   .goal-inp {
     width: 46px; flex-shrink: 0; text-align: center;
     background: #fff; border: 2px solid #d0d7de; border-radius: 9px;
@@ -84,6 +84,14 @@
   .goal-inp:focus { outline: none; border-color: #0969da; }
   .goal-inp:disabled { opacity: 0.4; background: #f6f8fa; }
   .goal-inp.win { border-color: #2da44e; background: #dafbe1; }
+
+  /* Aviso de empate (en eliminatoria no puede quedar empate) */
+  .tie-note {
+    display: none; margin-top: 8px; padding: 7px 10px; border-radius: 9px;
+    background: #fff1e0; border: 1px solid #f0c89a; color: #9a4d00;
+    font-size: 0.76em; font-weight: 600;
+  }
+  .tie-note.show { display: block; }
 
   /* ── Footer ── */
   .footer {
@@ -250,7 +258,7 @@ const MATCHDEF = {
 };
 
 const ROUNDS = [
-  { key:'r32',  label:'16avos',  title:'16avos de final', sub:'Elegí el ganador de cada partido (16 partidos).',
+  { key:'r32',  label:'16avos',  title:'16avos de final', sub:'Anotá el marcador de cada partido (16 partidos).',
     groups:[ {lbl:'Lado A', ids:['l_1','l_2','l_3','l_4','l_5','l_6','l_7','l_8']},
              {lbl:'Lado B', ids:['r_1','r_2','r_3','r_4','r_5','r_6','r_7','r_8']} ] },
   { key:'r16',  label:'Octavos', title:'Octavos de final', sub:'8 partidos · con tus ganadores anteriores.',
@@ -275,18 +283,39 @@ const ROUND_OF = {};
 ROUNDS.forEach((r,ri)=> r.groups.forEach(g=> g.ids.forEach(id=> ROUND_OF[id]=ri)));
 
 // ════════════ STATE ════════════
-let picks = {};       // matchId -> 0|1  (quién avanza)
-let scores = {};      // matchId -> [golesA, golesB]
+let scores = {};      // matchId -> [golesA, golesB]  (fuente de verdad)
+let picks = {};       // matchId -> 0|1|null  (DERIVADO del marcador)
 let name = '';
 let cur = 0;          // current round index
 const LS = 'q26_bracket';
 
-function save(){ localStorage.setItem(LS, JSON.stringify({name, picks, scores, cur})); }
+function save(){ localStorage.setItem(LS, JSON.stringify({name, scores, cur})); }
 function load(){
   try {
     const s = JSON.parse(localStorage.getItem(LS)||'null');
-    if(s){ name=s.name||''; picks=s.picks||{}; scores=s.scores||{}; cur=s.cur||0; }
+    if(s){ name=s.name||''; scores=s.scores||{}; cur=s.cur||0; }
   } catch(e){}
+  recompute();
+}
+
+// Avanza el de más goles. Empate = sin ganador (no se permite en eliminatoria).
+function resultOf(id){
+  const s = scores[id];
+  if(!s || s[0]==null || s[1]==null) return null;
+  if(s[0] > s[1]) return 0;
+  if(s[1] > s[0]) return 1;
+  return null;
+}
+function recompute(){
+  picks = {};
+  ORDER.forEach(id => { picks[id] = resultOf(id); });
+}
+function isTie(id){
+  const s = scores[id];
+  return !!(s && s[0]!=null && s[1]!=null && s[0]===s[1]);
+}
+function clearDownstream(ri){
+  ORDER.forEach(mid => { if(ROUND_OF[mid] > ri){ delete scores[mid]; } });
 }
 
 // ════════════ BRACKET LOGIC ════════════
@@ -306,26 +335,28 @@ function loserOf(id, pk){
   return (p==null) ? null : c[1-p];
 }
 
-function setPick(id, side){
-  picks[id] = side;
-  // limpiar picks y marcadores de rondas posteriores (dependen de ésta)
-  const ri = ROUND_OF[id];
-  ORDER.forEach(mid => { if(ROUND_OF[mid] > ri){ delete picks[mid]; delete scores[mid]; } });
-  save();
-  renderRound();
-}
-
 function setScore(id, side, val){
   let v = val.replace(/[^0-9]/g,'').slice(0,2);
   if(!scores[id]) scores[id] = [null, null];
   scores[id][side] = (v==='') ? null : Math.min(20, parseInt(v,10));
+  const oldW = picks[id];
+  recompute();
+  if(picks[id] !== oldW){ clearDownstream(ROUND_OF[id]); recompute(); }
+  updateMatchVisual(id);
+  renderStepper(); renderFooter();
   save();
-  // actualizar resaltado de ganador en los inputs sin re-render (no perder foco)
-  const inputs = document.querySelectorAll(`.goal-inp[data-mid="${id}"]`);
-  inputs.forEach(inp=>{
-    const s = parseInt(inp.dataset.side,10);
-    inp.classList.toggle('win', picks[id]===s);
+}
+// actualiza resaltados y el aviso de empate de UN partido sin re-render (no perder foco)
+function updateMatchVisual(id){
+  const w = picks[id];
+  [0,1].forEach(side=>{
+    const disp = document.querySelector(`.team-disp[data-team="${id}-${side}"]`);
+    const inp  = document.querySelector(`.goal-inp[data-mid="${id}"][data-side="${side}"]`);
+    if(disp) disp.classList.toggle('sel', w===side);
+    if(inp)  inp.classList.toggle('win', w===side);
   });
+  const tn = document.querySelector(`.tie-note[data-tie="${id}"]`);
+  if(tn) tn.classList.toggle('show', isTie(id));
 }
 
 function roundComplete(ri){
@@ -342,10 +373,10 @@ function renderStepper(){
   }).join('');
 }
 
-function teamButton(id, side, cand){
+function teamRow(id, side, cand){
   if(!cand){
     return `<div class="team-row">
-      <button class="team-btn tbd"><span class="tn placeholder">Por definir</span></button>
+      <div class="team-disp tbd"><span class="tn placeholder">Por definir</span></div>
       <input class="goal-inp" disabled>
     </div>`;
   }
@@ -354,9 +385,9 @@ function teamButton(id, side, cand){
   const sc = (scores[id] && scores[id][side]!=null) ? scores[id][side] : '';
   const winCls = picks[id]===side ? ' win' : '';
   return `<div class="team-row">
-    <button class="team-btn${sel}" onclick="setPick('${id}',${side})">
+    <div class="team-disp${sel}" data-team="${id}-${side}">
       ${flag}<span class="tn">${cand.n}</span><span class="pick-mark">✓</span>
-    </button>
+    </div>
     <input class="goal-inp${winCls}" type="text" inputmode="numeric" pattern="[0-9]*"
       data-mid="${id}" data-side="${side}" value="${sc}"
       oninput="setScore('${id}',${side},this.value)" aria-label="Goles de ${cand.n}">
@@ -370,17 +401,21 @@ function matchCard(id){
   let dateLabel = d.date;
   if(id==='third'){ cls+=' third'; dateLabel = '🥉 3er Lugar · ' + d.date; }
   if(id==='final'){ cls+=' final-card'; dateLabel = '🏆 Final · ' + d.date; }
-  return `<div class="${cls}">
+  const bothCands = cands[0] && cands[1];
+  const tieHtml = bothCands ? `
+    <div class="tie-note${isTie(id)?' show':''}" data-tie="${id}">⚠️ En eliminatoria no puede quedar empate — cambiá el marcador.</div>` : '';
+  return `<div class="${cls}" data-card="${id}">
     <div class="mcard-date">${dateLabel}</div>
-    ${teamButton(id, 0, cands[0])}
-    ${teamButton(id, 1, cands[1])}
+    ${teamRow(id, 0, cands[0])}
+    ${teamRow(id, 1, cands[1])}
+    ${tieHtml}
   </div>`;
 }
 
 function renderRound(){
   const r = ROUNDS[cur];
   document.getElementById('roundTitle').textContent = r.title;
-  document.getElementById('roundSub').innerHTML = r.sub + ' <span style="color:#6e7681">· tocá al ganador y anotá el marcador (opcional).</span>';
+  document.getElementById('roundSub').innerHTML = r.sub + ' <span style="color:#8c959f">· anotá el marcador; avanza el de más goles.</span>';
   let html = '';
   r.groups.forEach(g=>{
     if(g.lbl) html += `<div class="side-label">${g.lbl}</div>`;
@@ -400,7 +435,7 @@ function renderFooter(){
   // progress count
   const total = ROUNDS[cur].groups.reduce((a,g)=>a+g.ids.length,0);
   const filled = ROUNDS[cur].groups.reduce((a,g)=>a+g.ids.filter(id=>picks[id]!=null).length,0);
-  prog.textContent = `${filled} / ${total} elegidos`;
+  prog.textContent = `${filled} / ${total} completos`;
   next.disabled = !done;
   if(cur === ROUNDS.length-1){
     next.textContent = '✅ Generar mi código';
@@ -472,6 +507,7 @@ function showResult(){
     showToast('Escribí tu nombre primero ☝️');
     return;
   }
+  recompute();
   const code = encode();
   const champ = winnerOf('final', picks);
   const third = winnerOf('third', picks);
