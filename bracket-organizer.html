@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Organizador · Generar hoja de bracket</title>
+<style>
+  @page { size: letter landscape; margin: 0.35in; }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: Arial, Helvetica, sans-serif; color: #111;
+    background: #eef1f5;
+    -webkit-print-color-adjust: exact; print-color-adjust: exact;
+  }
+
+  /* ── Controls (no se imprimen) ── */
+  .controls {
+    background: #fff; border-bottom: 1px solid #d0d7de; padding: 14px 18px;
+    position: sticky; top: 0; z-index: 30; box-shadow: 0 1px 3px rgba(0,0,0,.06);
+  }
+  .controls h1 { font-size: 1.1em; margin: 0 0 4px; color: #0a3069; }
+  .controls .hint { font-size: 0.82em; color: #656d76; margin-bottom: 10px; }
+  .ctl-row { display: flex; gap: 10px; align-items: flex-start; flex-wrap: wrap; }
+  .ctl-row textarea {
+    flex: 1; min-width: 240px; min-height: 54px; resize: vertical;
+    border: 1px solid #d0d7de; border-radius: 8px; padding: 9px 11px;
+    font-family: monospace; font-size: 0.85em;
+  }
+  .ctl-row textarea:focus { outline: none; border-color: #0969da; }
+  .btn {
+    padding: 12px 18px; border-radius: 8px; border: none; font-size: 0.95em;
+    font-weight: 700; cursor: pointer; white-space: nowrap;
+  }
+  .btn-gen { background: #1f6feb; color: #fff; }
+  .btn-print { background: #2da44e; color: #fff; }
+  .btn-print:disabled { background: #d0d7de; color: #8c959f; cursor: not-allowed; }
+  .err { color: #cf222e; font-size: 0.85em; margin-top: 8px; font-weight: 600; }
+
+  .sheet-wrap { padding: 16px; display: flex; justify-content: center; }
+  .placeholder { color: #8c959f; text-align: center; padding: 60px 20px; font-size: 0.95em; }
+
+  /* ── Hoja (idéntica a la impresa, pero llena) ── */
+  .page {
+    width: 10.3in; background: #fff; padding: 14px 16px;
+    box-shadow: 0 2px 10px rgba(0,0,0,.1);
+  }
+  .header {
+    display: flex; justify-content: space-between; align-items: flex-end;
+    border-bottom: 2px solid #111; padding-bottom: 4px; margin-bottom: 4px;
+  }
+  .title { font-size: 16px; font-weight: 800; letter-spacing: .3px; }
+  .subtitle { font-size: 9px; color: #555; margin-top: 1px; }
+  .name-line { font-size: 13px; font-weight: 700; }
+  .name-line .nm { border-bottom: 2px solid #333; padding: 0 14px 1px; display: inline-block; min-width: 160px; text-align: center; }
+
+  .round-labels { display: flex; margin-bottom: 2px; }
+  .round-labels > div {
+    flex: 1; text-align: center; font-size: 8px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: .5px; color: #555;
+  }
+  .round-labels > div.final-lbl { flex: 1.3; color: #b8860b; }
+
+  .bracket { position: relative; display: flex; align-items: stretch; height: 6.5in; }
+  #wires { position: absolute; inset: 0; z-index: 0; pointer-events: none; }
+  .col {
+    display: flex; flex-direction: column; justify-content: space-around;
+    flex: 1; padding: 0 6px; position: relative; z-index: 1;
+  }
+  .col.center { flex: 1.3; justify-content: center; }
+
+  .match { border: 1px solid #333; border-radius: 4px; padding: 2px 3px; background: #fff; }
+  .m-date { font-size: 6.5px; color: #666; text-align: center; margin-bottom: 1px; letter-spacing: .2px; }
+
+  .gteam { display: flex; align-items: center; gap: 4px; padding: 2px 2px; }
+  .gteam + .gteam { margin-top: 1px; border-top: 1px dashed #ccc; padding-top: 2px; }
+  .gt-name { flex: 1; font-size: 8.5px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .gt-score {
+    flex-shrink: 0; width: 16px; height: 15px; border: 1px solid #999; border-radius: 2px;
+    font-size: 9px; font-weight: 800; display: flex; align-items: center; justify-content: center;
+  }
+  .gteam.win .gt-name { font-weight: 800; color: #0a3322; }
+  .gteam.win { background: #e7f6ec; border-radius: 3px; }
+  .gteam.win .gt-score { border-color: #2da44e; background: #d5f0dd; }
+  .gteam.lose .gt-name { color: #8c959f; }
+  .gteam.tbd .gt-name { color: #c0c6cc; font-style: italic; }
+
+  .col.center .match { border-width: 2px; border-color: #b8860b; }
+  .col.center .m-date { font-size: 8px; color: #9a6700; font-weight: 700; }
+  .col.center .gt-name { font-size: 10px; }
+  .col.center .gt-score { width: 18px; height: 17px; font-size: 11px; }
+  .match.third { border-color: #cd7f32 !important; }
+  .match.third .m-date { color: #b45309; }
+
+  .center-bottom { position: absolute; bottom: 0; left: 0; right: 0; }
+  .champion { text-align: center; margin-top: 8px; }
+  .champion .lbl { font-size: 9px; font-weight: 800; color: #b8860b; letter-spacing: 1.5px; }
+  .champion .cbox {
+    margin: 4px auto 0; border: 2px solid #b8860b; border-radius: 4px;
+    min-height: 26px; width: 150px; display: flex; align-items: center; justify-content: center;
+    font-size: 13px; font-weight: 800; color: #7a4f01; padding: 3px 6px;
+  }
+
+  .legend { font-size: 8px; color: #666; margin-top: 4px; text-align: center; }
+
+  @media print {
+    body { background: #fff; }
+    .controls, .placeholder { display: none !important; }
+    .sheet-wrap { padding: 0; }
+    .page { width: auto; box-shadow: none; padding: 0; }
+  }
+</style>
+</head>
+<body>
+
+<div class="controls">
+  <h1>🔐 Organizador · Generar hoja del bracket</h1>
+  <div class="hint">Pegá el código que te enviaron y generá la hoja llena (lista para imprimir o guardar como PDF).</div>
+  <div class="ctl-row">
+    <textarea id="codeInput" placeholder="Pegá aquí el código (empieza con Q26…)"></textarea>
+    <button class="btn btn-gen" onclick="generate()">Generar hoja</button>
+    <button class="btn btn-print" id="btnPrint" onclick="window.print()" disabled>🖨️ Imprimir / PDF</button>
+  </div>
+  <div class="err" id="err"></div>
+</div>
+
+<div class="sheet-wrap">
+  <div class="placeholder" id="placeholder">Pegá un código arriba y tocá <b>“Generar hoja”</b> para ver el bracket lleno.</div>
+  <div class="page" id="page" style="display:none">
+    <div class="header">
+      <div>
+        <div class="title">⚽ Quiniela Mundial 2026 · Fase Eliminatoria</div>
+        <div class="subtitle">Bracket completo del participante · marcadores y ganadores</div>
+      </div>
+      <div class="name-line">Participante: <span class="nm" id="pName"></span></div>
+    </div>
+
+    <div class="round-labels">
+      <div>16avos</div><div>Octavos</div><div>Cuartos</div><div>Semis</div>
+      <div class="final-lbl">Final</div>
+      <div>Semis</div><div>Cuartos</div><div>Octavos</div><div>16avos</div>
+    </div>
+
+    <div class="bracket">
+      <svg id="wires" xmlns="http://www.w3.org/2000/svg"></svg>
+      <div class="col" id="col-l-r32"></div>
+      <div class="col" id="col-l-r16"></div>
+      <div class="col" id="col-l-qf"></div>
+      <div class="col" id="col-l-sf"></div>
+      <div class="col center" id="col-final"></div>
+      <div class="col" id="col-r-sf"></div>
+      <div class="col" id="col-r-qf"></div>
+      <div class="col" id="col-r-r16"></div>
+      <div class="col" id="col-r-r32"></div>
+    </div>
+
+    <div class="legend">Todas las horas en hora central (CST)</div>
+  </div>
+</div>
+
+<script>
+// ════════════ DATA (igual que bracket.html) ════════════
+const T = (n, f) => ({ n, f });
+const MATCHDEF = {
+  l_1: { base:true, teams:[T('Sudáfrica','za'),     T('Canadá','ca')],      date:'Dom 28 Jun · 1:00 PM' },
+  l_2: { base:true, teams:[T('Países Bajos','nl'),  T('Marruecos','ma')],   date:'Lun 29 Jun · 7:00 PM' },
+  l_3: { base:true, teams:[T('Alemania','de'),      T('Paraguay','py')],    date:'Lun 29 Jun · 2:30 PM' },
+  l_4: { base:true, teams:[T('Francia','fr'),       T('Suecia','se')],      date:'Mar 30 Jun · 3:00 PM' },
+  l_5: { base:true, teams:[T('Bélgica','be'),       T('Senegal','sn')],     date:'Mié 1 Jul · 2:00 PM' },
+  l_6: { base:true, teams:[T('EE.UU.','us'),        T('Bosnia y H.','ba')], date:'Mié 1 Jul · 6:00 PM' },
+  l_7: { base:true, teams:[T('España','es'),        T('Austria','at')],     date:'Jue 2 Jul · 1:00 PM' },
+  l_8: { base:true, teams:[T('Portugal','pt'),      T('Croacia','hr')],     date:'Jue 2 Jul · 5:00 PM' },
+  r_1: { base:true, teams:[T('Brasil','br'),        T('Japón','jp')],       date:'Lun 29 Jun · 11:00 AM' },
+  r_2: { base:true, teams:[T('Costa de Marfil','ci'),T('Noruega','no')],    date:'Mar 30 Jun · 11:00 AM' },
+  r_3: { base:true, teams:[T('México','mx'),        T('Ecuador','ec')],     date:'Mar 30 Jun · 7:00 PM' },
+  r_4: { base:true, teams:[T('Inglaterra','gb-eng'),T('RD Congo','cd')],    date:'Mié 1 Jul · 10:00 AM' },
+  r_5: { base:true, teams:[T('Suiza','ch'),         T('Argelia','dz')],     date:'Jue 2 Jul · 9:00 PM' },
+  r_6: { base:true, teams:[T('Colombia','co'),      T('Ghana','gh')],       date:'Vie 3 Jul · 7:30 PM' },
+  r_7: { base:true, teams:[T('Australia','au'),     T('Egipto','eg')],      date:'Vie 3 Jul · 12:00 PM' },
+  r_8: { base:true, teams:[T('Argentina','ar'),     T('Cabo Verde','cv')],  date:'Vie 3 Jul · 4:00 PM' },
+  lr16_1: { feeders:['l_1','l_2'], date:'Sáb 4 Jul · 11:00 AM' },
+  lr16_2: { feeders:['l_3','l_4'], date:'Sáb 4 Jul · 3:00 PM' },
+  lr16_3: { feeders:['l_5','l_6'], date:'Lun 6 Jul · 6:00 PM' },
+  lr16_4: { feeders:['l_7','l_8'], date:'Lun 6 Jul · 1:00 PM' },
+  rr16_1: { feeders:['r_1','r_2'], date:'Dom 5 Jul · 2:00 PM' },
+  rr16_2: { feeders:['r_3','r_4'], date:'Dom 5 Jul · 6:00 PM' },
+  rr16_3: { feeders:['r_5','r_6'], date:'Mar 7 Jul · 2:00 PM' },
+  rr16_4: { feeders:['r_7','r_8'], date:'Mar 7 Jul · 10:00 AM' },
+  lqf_1: { feeders:['lr16_1','lr16_2'], date:'Jue 9 Jul · 2:00 PM' },
+  lqf_2: { feeders:['lr16_3','lr16_4'], date:'Vie 10 Jul · 1:00 PM' },
+  rqf_1: { feeders:['rr16_1','rr16_2'], date:'Sáb 11 Jul · 3:00 PM' },
+  rqf_2: { feeders:['rr16_3','rr16_4'], date:'Sáb 11 Jul · 7:00 PM' },
+  lsf: { feeders:['lqf_1','lqf_2'], date:'Mar 14 Jul · 1:00 PM' },
+  rsf: { feeders:['rqf_1','rqf_2'], date:'Mié 15 Jul · 1:00 PM' },
+  final: { feeders:['lsf','rsf'], date:'Dom 19 Jul · 1:00 PM' },
+  third: { feeders:['lsf','rsf'], losers:true, date:'Sáb 18 Jul · 8:00 PM' },
+};
+const ORDER = [
+  'l_1','l_2','l_3','l_4','l_5','l_6','l_7','l_8',
+  'r_1','r_2','r_3','r_4','r_5','r_6','r_7','r_8',
+  'lr16_1','lr16_2','lr16_3','lr16_4','rr16_1','rr16_2','rr16_3','rr16_4',
+  'lqf_1','lqf_2','rqf_1','rqf_2','lsf','rsf','final','third',
+];
+const COLS = {
+  'col-l-r32': ['l_1','l_2','l_3','l_4','l_5','l_6','l_7','l_8'],
+  'col-l-r16': ['lr16_1','lr16_2','lr16_3','lr16_4'],
+  'col-l-qf':  ['lqf_1','lqf_2'],
+  'col-l-sf':  ['lsf'],
+  'col-r-sf':  ['rsf'],
+  'col-r-qf':  ['rqf_1','rqf_2'],
+  'col-r-r16': ['rr16_1','rr16_2','rr16_3','rr16_4'],
+  'col-r-r32': ['r_1','r_2','r_3','r_4','r_5','r_6','r_7','r_8'],
+};
+const FEEDS = [
+  ['l_1','lr16_1','L'],['l_2','lr16_1','L'],['l_3','lr16_2','L'],['l_4','lr16_2','L'],
+  ['l_5','lr16_3','L'],['l_6','lr16_3','L'],['l_7','lr16_4','L'],['l_8','lr16_4','L'],
+  ['lr16_1','lqf_1','L'],['lr16_2','lqf_1','L'],['lr16_3','lqf_2','L'],['lr16_4','lqf_2','L'],
+  ['lqf_1','lsf','L'],['lqf_2','lsf','L'],['lsf','final','L'],
+  ['r_1','rr16_1','R'],['r_2','rr16_1','R'],['r_3','rr16_2','R'],['r_4','rr16_2','R'],
+  ['r_5','rr16_3','R'],['r_6','rr16_3','R'],['r_7','rr16_4','R'],['r_8','rr16_4','R'],
+  ['rr16_1','rqf_1','R'],['rr16_2','rqf_1','R'],['rr16_3','rqf_2','R'],['rr16_4','rqf_2','R'],
+  ['rqf_1','rsf','R'],['rqf_2','rsf','R'],['rsf','final','R'],
+];
+
+// ════════════ DECODE ════════════
+let PICKS = {}, SCORES = {};
+function hexToScores(hex){
+  const sc = {};
+  ORDER.forEach((id,i)=>{
+    const dv = c => (c===undefined||c==='f') ? null : parseInt(c,16);
+    const av = dv(hex[i*2]), bv = dv(hex[i*2+1]);
+    if(av!=null || bv!=null) sc[id] = [av, bv];
+  });
+  return sc;
+}
+function decode(code){
+  code = code.trim();
+  if(!code.startsWith('Q26')) throw new Error('El código debe empezar con “Q26”.');
+  let b64 = code.slice(3).replace(/-/g,'+').replace(/_/g,'/');
+  while(b64.length%4) b64 += '=';
+  let payload;
+  try { payload = JSON.parse(decodeURIComponent(escape(atob(b64)))); }
+  catch(e){ throw new Error('Código corrupto o incompleto.'); }
+  const bin = atob(payload.p);
+  let bits = '';
+  for(let i=0;i<bin.length;i++) bits += bin.charCodeAt(i).toString(2).padStart(8,'0');
+  const pk = {};
+  ORDER.forEach((id,i)=> pk[id] = bits[i]==='1' ? 1 : 0);
+  return { name: payload.n||'(sin nombre)', picks: pk, scores: payload.s ? hexToScores(payload.s) : {} };
+}
+
+// ════════════ BRACKET LOGIC ════════════
+function candidatesOf(id){
+  const d = MATCHDEF[id];
+  if(d.base) return d.teams;
+  const [f0,f1] = d.feeders;
+  if(d.losers) return [loserOf(f0), loserOf(f1)];
+  return [winnerOf(f0), winnerOf(f1)];
+}
+function winnerOf(id){ const c = candidatesOf(id); const p = PICKS[id]; return (p==null)?null:c[p]; }
+function loserOf(id){ const c = candidatesOf(id); const p = PICKS[id]; return (p==null)?null:c[1-p]; }
+
+// ════════════ RENDER ════════════
+function teamRowHTML(id, side){
+  const cands = candidatesOf(id);
+  const cand = cands[side];
+  const s = SCORES[id] || [null,null];
+  const isWin = PICKS[id]===side;
+  let cls = 'gteam';
+  if(!cand) cls += ' tbd';
+  else cls += isWin ? ' win' : ' lose';
+  const name = cand ? cand.n : 'Por definir';
+  const sc = (s[side]==null) ? '' : s[side];
+  return `<div class="${cls}">
+    <span class="gt-name">${name}</span>
+    <span class="gt-score">${sc}</span>
+  </div>`;
+}
+function matchBox(id){
+  const d = MATCHDEF[id];
+  let cls = 'match';
+  let dateLabel = d.date;
+  if(id==='third'){ cls+=' third'; dateLabel = '🥉 3er Lugar · ' + d.date; }
+  if(id==='final'){ dateLabel = '🏆 Final · ' + d.date; }
+  return `<div class="${cls}" id="m-${id}">
+    <div class="m-date">${dateLabel}</div>
+    ${teamRowHTML(id, 0)}
+    ${teamRowHTML(id, 1)}
+  </div>`;
+}
+
+function generate(){
+  const err = document.getElementById('err');
+  err.textContent = '';
+  let data;
+  try { data = decode(document.getElementById('codeInput').value); }
+  catch(e){ err.textContent = '⚠️ ' + e.message; return; }
+
+  PICKS = data.picks; SCORES = data.scores;
+  document.getElementById('pName').textContent = data.name;
+
+  Object.entries(COLS).forEach(([colId, ids])=>{
+    document.getElementById(colId).innerHTML = ids.map(matchBox).join('');
+  });
+  const champ = winnerOf('final');
+  document.getElementById('col-final').innerHTML =
+    matchBox('final') +
+    `<div class="center-bottom">
+       ${matchBox('third')}
+       <div class="champion">
+         <div class="lbl">🏆 CAMPEÓN</div>
+         <div class="cbox">${champ ? champ.n : '—'}</div>
+       </div>
+     </div>`;
+
+  document.getElementById('placeholder').style.display = 'none';
+  document.getElementById('page').style.display = 'block';
+  document.getElementById('btnPrint').disabled = false;
+  requestAnimationFrame(drawWires);
+}
+
+function drawWires(){
+  const bracket = document.querySelector('.bracket');
+  const svg = document.getElementById('wires');
+  const br = bracket.getBoundingClientRect();
+  svg.setAttribute('width', br.width);
+  svg.setAttribute('height', br.height);
+  svg.setAttribute('viewBox', `0 0 ${br.width} ${br.height}`);
+  svg.innerHTML = '';
+  const rectOf = id => {
+    const el = document.getElementById('m-'+id);
+    if(!el) return null;
+    const r = el.getBoundingClientRect();
+    return { left:r.left-br.left, right:r.right-br.left, midY:(r.top+r.bottom)/2-br.top };
+  };
+  FEEDS.forEach(([c,p,side])=>{
+    const cr = rectOf(c), pr = rectOf(p);
+    if(!cr || !pr) return;
+    let x0, x2;
+    if(side==='L'){ x0 = cr.right; x2 = pr.left; }
+    else          { x0 = cr.left;  x2 = pr.right; }
+    const xm = (x0 + x2)/2;
+    const pts = `${x0},${cr.midY} ${xm},${cr.midY} ${xm},${pr.midY} ${x2},${pr.midY}`;
+    const pl = document.createElementNS('http://www.w3.org/2000/svg','polyline');
+    pl.setAttribute('points', pts);
+    pl.setAttribute('fill', 'none');
+    pl.setAttribute('stroke', '#999');
+    pl.setAttribute('stroke-width', '1');
+    svg.appendChild(pl);
+  });
+}
+window.addEventListener('resize', ()=>{ if(document.getElementById('page').style.display!=='none') drawWires(); });
+window.addEventListener('beforeprint', ()=>{ if(document.getElementById('page').style.display!=='none') drawWires(); });
+</script>
+</body>
+</html>
