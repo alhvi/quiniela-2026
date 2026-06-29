@@ -100,21 +100,17 @@
   /* ── PREDICTIONS ── */
   .preds-section { border-top: 1px solid #21262d; padding: 10px 12px; }
   .preds-title { font-size: 0.78em; text-transform: uppercase; letter-spacing: 0.8px; color: #6e7681; margin-bottom: 7px; }
-  .k-preds { display: flex; flex-direction: column; gap: 5px; }
-  .k-pred { display: flex; align-items: center; gap: 7px; padding: 6px 8px; background: #21262d; border-radius: 7px; border: 1px solid transparent; font-size: 0.86em; }
+  .k-preds { display: grid; grid-template-columns: 1fr 1fr; gap: 5px; }
+  .k-pred { display: flex; align-items: center; gap: 6px; padding: 6px 8px; background: #21262d; border-radius: 7px; border: 1px solid transparent; }
   .k-pred.exact  { border-color: rgba(63,185,80,0.3);  background: rgba(63,185,80,0.07); }
   .k-pred.result { border-color: rgba(232,184,75,0.3); background: rgba(232,184,75,0.07); }
-  .kp-name { flex: 0 0 60px; color: #c9d1d9; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: 0.92em; }
-  .kp-match { flex: 1; display: flex; align-items: center; gap: 5px; justify-content: center; min-width: 0; }
-  .kp-flag { height: 12px; border-radius: 2px; flex-shrink: 0; }
-  .kp-team { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 86px; color: #8b949e; }
-  .kp-team.win { font-weight: 800; color: #e6edf3; }
-  .kp-sc { font-weight: 800; flex-shrink: 0; color: #c9d1d9; }
-  .kp-badge { flex: 0 0 22px; text-align: right; font-weight: 800; color: #565d66; font-size: 0.95em; }
-  .k-pred.exact  .kp-badge { color: #3fb950; }
-  .k-pred.result .kp-badge { color: #e8b84b; }
+  .kp-name { font-size: 0.92em; color: #8b949e; flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .kp-sc { font-size: 0.92em; font-weight: 700; color: #e6edf3; white-space: nowrap; }
   .k-pred.exact  .kp-sc { color: #3fb950; }
   .k-pred.result .kp-sc { color: #e8b84b; }
+  .kp-badge { font-size: 0.78em; font-weight: 700; color: #8b949e; min-width: 20px; text-align: right; }
+  .k-pred.exact  .kp-badge { color: #3fb950; }
+  .k-pred.result .kp-badge { color: #e8b84b; }
 </style>
 </head>
 <body>
@@ -442,19 +438,14 @@ function realScoreRow(id){
 }
 function buildPreds(id){
   return PARTICIPANTS.map(p=>{
-    const pc = p.bracket.cand[id], pw = p.bracket.win[id], ps = p.scores[id];
+    const pc = p.bracket.cand[id], ps = p.scores[id];
     if(!pc[0] || !pc[1]) return '';
     const n = pointsFor(p, id);
     const cls = n===3?'exact':n===1?'result':'';
     const badge = n!=null ? `<span class="kp-badge">${n>0?'+'+n:''}</span>` : `<span class="kp-badge"></span>`;
-    const w0 = pw && pw.n===pc[0].n, w1 = pw && pw.n===pc[1].n;
     return `<div class="k-pred ${cls}">
       <span class="kp-name">${p.name}</span>
-      <span class="kp-match">
-        ${flagOf(pc[0],'kp-flag')}<span class="kp-team ${w0?'win':''}">${pc[0].n}</span>
-        <span class="kp-sc">${ps[0]}–${ps[1]}</span>
-        <span class="kp-team ${w1?'win':''}">${pc[1].n}</span>${flagOf(pc[1],'kp-flag')}
-      </span>
+      <span class="kp-sc">${ps[0]}–${ps[1]}</span>
       ${badge}
     </div>`;
   }).join('');
