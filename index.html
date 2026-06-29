@@ -85,11 +85,14 @@
   @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.5} }
 
   /* ── REAL MATCHUP ── */
-  .card-score-row { display: flex; align-items: center; justify-content: center; gap: 10px; padding: 14px 12px; }
-  .score-side { display: flex; align-items: center; gap: 8px; max-width: 42%; }
-  .score-side.home { justify-content: flex-end; }
-  .ss-name { font-weight: 700; font-size: 0.95em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .team-flag { height: 26px; border-radius: 3px; flex-shrink: 0; display: block; object-fit: cover; box-shadow: 0 1px 3px rgba(0,0,0,0.4); }
+  .card-teams { font-size: 1.05em; font-weight: 700; text-align: center; padding: 12px 12px 6px; display: flex; align-items: center; justify-content: center; gap: 8px; }
+  .t-name { flex: 1; }
+  .t-name.home { text-align: right; }
+  .t-name.away { text-align: left; }
+  .t-vs { color: #8b949e; font-size: 0.8em; font-weight: 400; flex-shrink: 0; }
+  .card-score-row { display: flex; align-items: center; justify-content: center; gap: 10px; padding: 6px 12px 14px; }
+  .score-side { display: flex; align-items: center; gap: 8px; }
+  .team-flag { height: 28px; border-radius: 3px; flex-shrink: 0; display: block; object-fit: cover; box-shadow: 0 1px 3px rgba(0,0,0,0.4); }
   .score-display { width: 64px; height: 64px; font-size: 1.8em; font-weight: 800; text-align: center; background: #0d1117; border: 2px solid #30363d; border-radius: 10px; color: #e6edf3; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
   .score-display.has-score { border-color: #3fb950; }
   .score-display.live-score { border-color: #cc2020; }
@@ -424,15 +427,18 @@ function realScoreRow(id){
   const has = real && real.h!=null;
   const isLive = real && (real.status==='in_progress'||real.status==='live');
   const sc = isLive ? 'live-score' : (has ? 'has-score' : '');
-  return `<div class="card-score-row">
-    <div class="score-side home">
-      <span class="ss-name">${rc[0].n}</span>${flagOf(rc[0],'team-flag')}
+  return `<div class="card-teams">
+    <span class="t-name home">${rc[0].n}</span>
+    <span class="t-vs">vs</span>
+    <span class="t-name away">${rc[1].n}</span>
+  </div>
+  <div class="card-score-row">
+    <div class="score-side">${flagOf(rc[0],'team-flag')}
+      <div class="score-display ${sc}">${has?real.h:'–'}</div>
     </div>
-    <div class="score-display ${sc}">${has?real.h:'–'}</div>
     <span class="score-dash">–</span>
-    <div class="score-display ${sc}">${has?real.a:'–'}</div>
     <div class="score-side">
-      ${flagOf(rc[1],'team-flag')}<span class="ss-name">${rc[1].n}</span>
+      <div class="score-display ${sc}">${has?real.a:'–'}</div>${flagOf(rc[1],'team-flag')}
     </div>
   </div>`;
 }
