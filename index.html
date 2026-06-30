@@ -303,9 +303,13 @@ function applyScores(data){
     const home = resolveTeam(m.home_team || m.home), away = resolveTeam(m.away_team || m.away);
     const hs = m.home_score ?? m.score_home ?? null, as = m.away_score ?? m.score_away ?? null;
     const hpen = m.home_pen ?? null, apen = m.away_pen ?? null;
+    const pen = hpen!=null && apen!=null;
+    // Sumar penales al marcador para que el resultado sea comparable con predicciones
+    const hTot = hs==null ? null : pen ? +hs + +hpen : +hs;
+    const aTot = as==null ? null : pen ? +as + +apen : +as;
     const status = (m.status || '').toLowerCase();
     const winnerName = m.winner ? resolveTeam(m.winner) : null;
-    return { home, away, hs: hs==null?null:+hs, as: as==null?null:+as, hpen: hpen==null?null:+hpen, apen: apen==null?null:+apen, status, winnerName };
+    return { home, away, hs: hTot, as: aTot, pen, status, winnerName };
   });
   apiReal = {}; realPicks = {};
   // varias pasadas: a medida que se resuelven ganadores, aparecen los equipos de la siguiente ronda
@@ -320,18 +324,11 @@ function applyScores(data){
       if(!am) return;
       // orientar al orden de rc
       let h, a;
-      const homeIsRc0 = am.home===rc[0].n;
-      if(homeIsRc0){ h=am.hs; a=am.as; } else { h=am.as; a=am.hs; }
-      const pen = am.hpen!=null && am.apen!=null;
-      apiReal[id] = { h, a, status: am.status, pen };
+      if(am.home===rc[0].n){ h=am.hs; a=am.as; } else { h=am.as; a=am.hs; }
+      apiReal[id] = { h, a, status: am.status, pen: am.pen };
       if(h!=null && a!=null){
         let side = h>a?0 : a>h?1 : null;
         if(side===null && am.winnerName) side = am.winnerName===rc[0].n?0 : am.winnerName===rc[1].n?1 : null;
-        if(side===null && pen){
-          const rc0pen = homeIsRc0 ? am.hpen : am.apen;
-          const rc1pen = homeIsRc0 ? am.apen : am.hpen;
-          side = rc0pen>rc1pen ? 0 : rc1pen>rc0pen ? 1 : null;
-        }
         if(side!==null){ realPicks[id]=side; changed=true; }
       }
     });
