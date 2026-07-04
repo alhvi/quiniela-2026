@@ -673,12 +673,12 @@ buildUI();
     if(saved.fechaTab) switchTab(saved.fechaTab, 'fecha-tabs', 'fecha-panels');
     if(saved.rondaTab) switchTab(saved.rondaTab, 'ronda-tabs', 'ronda-panels');
   } else {
-    // Ir a octavos por defecto si ya pasaron los 16avos
     const now = new Date();
     const dk = (now.getMonth()+1)*100 + now.getDate();
-    const todayLabel = DATES.find(d=>{ const id=ORDER.find(x=>META[x].dateLabel===d); return META[id].dk===dk; });
-    if(todayLabel) switchTab(todayLabel, 'fecha-tabs', 'fecha-panels');
-    else switchTab('r16', 'ronda-tabs', 'ronda-panels');
+    // Primera fecha >= hoy; si ya pasaron todas, la última
+    const best = DATES.find(d => { const id=ORDER.find(x=>META[x].dateLabel===d); return META[id].dk>=dk; })
+                 ?? DATES[DATES.length-1];
+    if(best) switchTab(best, 'fecha-tabs', 'fecha-panels');
   }
 })();
 renderLb();
