@@ -1,0 +1,38 @@
+name: Fetch WC2026 scores
+
+on:
+  # Corre cada 5 min, solo en fechas UTC que cubren días con partidos
+  # (tiempo Guatemala UTC-6, así que cada día de partido cubre 2 fechas UTC)
+  schedule:
+    - cron: '*/5 * 4,5,6,7,8,9,10,11,12,14,15,16,18,19,20 7 *'
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+concurrency:
+  group: fetch-scores
+  cancel-in-progress: false
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Fetch scores from API
+        env:
+          WC2026_API_KEY: ${{ secrets.WC2026_API_KEY }}
+        run: node scripts/fetch-scores.mjs
+
+      - name: Commit if changed
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add data/scores.json
+          git diff --cached --quiet || git commit -m "chore: update scores $(date -u +%Y-%m-%dT%H:%M:%SZ)"
+          git push

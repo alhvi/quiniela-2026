@@ -33,8 +33,8 @@ Seguimiento de quinielas para la fase de grupos del Mundial 2026 (72 partidos, 1
 
 **Proveedor:** wc2026api.com  
 **Base URL:** `https://api.wc2026api.com`  
-**API Key:** `wc26_XkWhnmn6apUpGmpPYendFN`  
-**Auth header:** `Authorization: Bearer wc26_XkWhnmn6apUpGmpPYendFN`
+**Auth header:** `Authorization: Bearer <WC2026_API_KEY>`  
+**Key:** guardada como secret de GitHub Actions (`WC2026_API_KEY`), nunca en el código fuente.
 
 ### Endpoints
 
@@ -69,7 +69,7 @@ El objeto `EN_TO_ES` en `index.html` cubre todos los equipos verificados contra 
 
 ## Notas técnicas
 
-- Fetch al cargar la página (sin polling automático), caché localStorage 5 min
+- Los resultados se obtienen por un GitHub Action programado (`.github/workflows/fetch-scores.yml`) que corre cada 5 min solo en fechas UTC con partidos, y los guarda en `data/scores.json` (commit automático). El front-end solo lee ese JSON estático — nunca llama al API externo directamente, así el consumo del API no depende de cuánta gente visite la página.
 - Horarios en tiempo de Guatemala (UTC-6), hardcodeados desde la API
 - Partidos ordenados por hora dentro de cada fecha
 - Banderas vía `flagcdn.com/h40/{iso-code}.png`

@@ -321,8 +321,6 @@ let apiReal = {};
 let realPicks = {};
 let realBracket = makeBracket({});
 
-const API_BASE = 'https://api.wc2026api.com';
-const API_KEY  = 'wc26_XkWhnmn6apUpGmpPYendFN';
 const EN_TO_ES = {
   'South Africa':'Sudáfrica','Canada':'Canadá','Netherlands':'Países Bajos','Morocco':'Marruecos',
   'Germany':'Alemania','Paraguay':'Paraguay','France':'Francia','Sweden':'Suecia','Belgium':'Bélgica',
@@ -376,32 +374,23 @@ function applyScores(data){
   renderLb();
 }
 
-const CACHE_KEY = 'q2026_oct_scores';
-const CACHE_TTL = 10 * 60 * 1000;
+const SCORES_URL = 'data/scores.json';
 async function fetchScores(){
   const dot = document.getElementById('apiDot'), msg = document.getElementById('apiStatus');
-  try {
-    const cached = JSON.parse(localStorage.getItem(CACHE_KEY) || 'null');
-    if(cached && (Date.now() - cached.ts) < CACHE_TTL){
-      applyScores(cached.data);
-      dot.className = 'api-dot ok';
-      msg.textContent = `Resultados actualizados (caché ${Math.floor((Date.now()-cached.ts)/1000)}s)`;
-      return;
-    }
-  } catch(_){}
   dot.className = 'api-dot loading';
   try {
-    const res = await fetch(`${API_BASE}/matches`, { headers: { 'Authorization': `Bearer ${API_KEY}` } });
+    const res = await fetch(SCORES_URL, { cache: 'no-store' });
     if(!res.ok) throw new Error(`HTTP ${res.status}`);
-    const data = await res.json();
-    try { localStorage.setItem(CACHE_KEY, JSON.stringify({ ts: Date.now(), data })); } catch(_){}
-    applyScores(data);
+    const payload = await res.json();
+    applyScores(payload.data);
     const decided = Object.keys(apiReal).length;
     dot.className = 'api-dot ok';
-    msg.textContent = decided>0 ? `Resultados actualizados · ${decided} partido${decided>1?'s':''}` : 'Sin partidos jugados aún';
+    const age = payload.fetchedAt ? Math.max(0, Math.floor((Date.now() - new Date(payload.fetchedAt).getTime())/1000)) : null;
+    const ageStr = age!=null ? ` (hace ${age<60?age+'s':Math.floor(age/60)+'min'})` : '';
+    msg.textContent = decided>0 ? `Resultados actualizados${ageStr} · ${decided} partido${decided>1?'s':''}` : `Sin partidos jugados aún${ageStr}`;
   } catch(e) {
     dot.className = 'api-dot err';
-    msg.textContent = `Sin conexión con la API · ${e.message}`;
+    msg.textContent = `Sin datos de resultados · ${e.message}`;
   }
 }
 
