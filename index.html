@@ -43,7 +43,7 @@
   .lb-toggle .chevron { transition: transform 0.2s; display: inline-block; }
   .lb-toggle.open .chevron { transform: rotate(180deg); }
   .lb-panel { background: #161b22; border-bottom: 1px solid #30363d; overflow: hidden; max-height: 0; transition: max-height 0.3s ease; }
-  .lb-panel.open { max-height: 1100px; }
+  .lb-panel.open { max-height: 1200px; }
   .lb-list { padding: 10px 12px; display: flex; flex-direction: column; gap: 6px; }
   .lb-row { display: flex; align-items: center; gap: 10px; background: #21262d; border-radius: 8px; padding: 9px 12px; border-left: 3px solid transparent; }
   .lb-row.rank-1 { border-left-color: #cc2020; }
@@ -57,6 +57,9 @@
   .lb-champ { color: #e8b84b; font-weight: 700; }
   .lb-pts { font-size: 1.1em; font-weight: 800; color: #3fb950; text-align: right; min-width: 56px; }
   .lb-pts span { font-size: 0.68em; color: #8b949e; font-weight: 400; display: block; }
+  .lb-tabs { display: flex; gap: 6px; padding: 10px 12px 0; }
+  .lb-tab { flex: 1; padding: 7px 4px; border: 1.5px solid #30363d; border-radius: 8px; background: #0d1117; color: #8b949e; font-size: 0.78em; font-weight: 700; cursor: pointer; transition: all 0.15s; }
+  .lb-tab.active { background: #1a3a8f; border-color: #1a3a8f; color: #fff; }
 
   /* ── VIEW TOGGLE ── */
   .view-toggle { display: flex; gap: 8px; padding: 10px 12px; background: #0d1117; border-bottom: 1px solid #21262d; position: sticky; top: 57px; z-index: 95; }
@@ -160,6 +163,11 @@
   <span class="chevron">▼</span>
 </button>
 <div class="lb-panel open" id="lbPanel">
+  <div class="lb-tabs">
+    <button class="lb-tab active" data-lbtab="r32" onclick="setLbTab('r32')">16avos</button>
+    <button class="lb-tab" data-lbtab="r16" onclick="setLbTab('r16')">8avos</button>
+    <button class="lb-tab" data-lbtab="actual" id="lbTabActual" onclick="setLbTab('actual')">Actual</button>
+  </div>
   <div class="lb-list" id="lbList"></div>
 </div>
 
@@ -408,6 +416,23 @@ async function fetchScores(){
 }
 
 // ════════════ SCORING ════════════
+let lbTab = 'r32';
+
+function currentRoundKey(){
+  // Busca la ronda más avanzada que ya tenga al menos un resultado
+  const order = ['fin','sf','qf','r16','r32'];
+  for(const rk of order){
+    if(ORDER.some(id => ROUND_KEY[id]===rk && apiReal[id] && apiReal[id].h!=null)) return rk;
+  }
+  return 'r32';
+}
+
+function setLbTab(tab){
+  lbTab = tab;
+  document.querySelectorAll('.lb-tab').forEach(b => b.classList.toggle('active', b.dataset.lbtab===tab));
+  renderLb();
+}
+
 function pointsFor(p, id){
   const real = apiReal[id];
   if(!real || real.h==null) return null;
@@ -432,15 +457,20 @@ function pointsFor(p, id){
 }
 
 function getTotals(){
+  const actRk = currentRoundKey();
   return PARTICIPANTS.map(p=>{
-    let pts=0, exact=0, result=0, r32pts=0, octpts=0;
+    let exact=0, result=0;
+    const byRound = {r32:0, r16:0, qf:0, sf:0, fin:0};
     ORDER.forEach(id=>{
       const n = pointsFor(p, id);
-      if(n===3){ pts+=3; exact++; if(R32_IDS.includes(id)) r32pts+=3; else octpts+=3; }
-      else if(n===1){ pts+=1; result++; if(R32_IDS.includes(id)) r32pts+=1; else octpts+=1; }
+      if(n===3){ exact++; byRound[ROUND_KEY[id]]+=3; }
+      else if(n===1){ result++; byRound[ROUND_KEY[id]]+=1; }
     });
+    const r32pts = byRound.r32;
+    const octpts = byRound.r16 + byRound.qf + byRound.sf + byRound.fin;
+    const actpts = byRound[actRk] || 0;
     const champ = p.octbr ? p.octbr.win['final'] : null;
-    return {pts, exact, result, r32pts, octpts, champ};
+    return {pts: r32pts+octpts, r32pts, octpts, actpts, actRk, exact, result, champ};
   });
 }
 
@@ -449,26 +479,46 @@ function toggleLb(){
   document.getElementById('lbToggle').classList.toggle('open');
   document.getElementById('lbPanel').classList.toggle('open');
 }
+
+const ROUND_LABEL = {r32:'16avos', r16:'Octavos', qf:'Cuartos', sf:'Semis', fin:'Final'};
+
 function renderLb(){
   const totals = getTotals();
+  const actRk = totals[0]?.actRk ?? currentRoundKey();
+  const actLabel = ROUND_LABEL[actRk] || actRk;
+
+  // Actualiza la etiqueta del tab "actual"
+  const actTab = document.getElementById('lbTabActual');
+  if(actTab) actTab.textContent = actLabel;
+
+  const scoreOf = t => lbTab==='r32' ? t.pts : lbTab==='r16' ? t.octpts : t.actpts;
   const ranked = PARTICIPANTS.map((p,i)=>({name:p.name, hasOct:!!p.octbr, ...totals[i]}))
-    .sort((a,b)=> b.pts-a.pts || b.exact-a.exact || a.name.localeCompare(b.name));
-  let rank=1, prev={pts:-1,exact:-1};
+    .sort((a,b)=> scoreOf(b)-scoreOf(a) || b.exact-a.exact || a.name.localeCompare(b.name));
+
+  let rank=1, prev={s:-1,exact:-1};
   document.getElementById('lbList').innerHTML = ranked.map((p,i)=>{
-    if(p.pts!==prev.pts||p.exact!==prev.exact) rank=i+1;
-    prev={pts:p.pts,exact:p.exact};
+    const s = scoreOf(p);
+    if(s!==prev.s||p.exact!==prev.exact) rank=i+1;
+    prev={s,exact:p.exact};
     const rankCls = rank===1?'rank-1':rank===2?'rank-2':rank===3?'rank-3':'';
     const medal = rank===1?'🥇':rank===2?'🥈':rank===3?'🥉':rank;
     const champStr = p.champ ? `<span class="lb-champ">🏆 ${p.champ.n}</span> · ` : '';
-    const r32str = `16avos: ${p.r32pts}`;
-    const octStr = p.hasOct ? ` · Oct+: ${p.octpts}` : ` · <span style="color:#484f58">Oct: pendiente</span>`;
+    let detail = '';
+    if(lbTab==='r32'){
+      const octStr = p.hasOct ? `Oct+: ${p.octpts}` : `<span style="color:#484f58">Oct: pendiente</span>`;
+      detail = `${champStr}16avos: ${p.r32pts} · ${octStr} · ✅ ${p.exact} 🟡 ${p.result}`;
+    } else if(lbTab==='r16'){
+      detail = `${champStr}Oct+: ${p.octpts} · (16avos: ${p.r32pts}) · ✅ ${p.exact} 🟡 ${p.result}`;
+    } else {
+      detail = `${champStr}${actLabel}: ${p.actpts} · total: ${p.pts} · ✅ ${p.exact} 🟡 ${p.result}`;
+    }
     return `<div class="lb-row ${rankCls}">
       <div class="lb-num">${medal}</div>
       <div class="lb-info">
         <div class="lb-name">${p.name}</div>
-        <div class="lb-detail">${champStr}${r32str}${octStr} · ✅ ${p.exact} 🟡 ${p.result}</div>
+        <div class="lb-detail">${detail}</div>
       </div>
-      <div class="lb-pts">${p.pts}<span>${p.pts===1?'punto':'puntos'}</span></div>
+      <div class="lb-pts">${s}<span>${s===1?'punto':'puntos'}</span></div>
     </div>`;
   }).join('');
 }
