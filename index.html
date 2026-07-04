@@ -159,14 +159,14 @@
 </div>
 
 <button class="lb-toggle open" id="lbToggle" onclick="toggleLb()">
-  🏆 Tabla de posiciones · Octavos
+  🏆 Tabla de posiciones
   <span class="chevron">▼</span>
 </button>
 <div class="lb-panel open" id="lbPanel">
   <div class="lb-tabs">
-    <button class="lb-tab active" data-lbtab="r32" onclick="setLbTab('r32')">16avos</button>
+    <button class="lb-tab active" data-lbtab="r32" onclick="setLbTab('r32')">Completo</button>
     <button class="lb-tab" data-lbtab="r16" onclick="setLbTab('r16')">8avos</button>
-    <button class="lb-tab" data-lbtab="actual" id="lbTabActual" onclick="setLbTab('actual')">Actual</button>
+    <button class="lb-tab" data-lbtab="actual" onclick="setLbTab('actual')">Actual</button>
   </div>
   <div class="lb-list" id="lbList"></div>
 </div>
@@ -486,10 +486,6 @@ function renderLb(){
   const totals = getTotals();
   const actRk = totals[0]?.actRk ?? currentRoundKey();
   const actLabel = ROUND_LABEL[actRk] || actRk;
-
-  // Actualiza la etiqueta del tab "actual"
-  const actTab = document.getElementById('lbTabActual');
-  if(actTab) actTab.textContent = actLabel;
 
   const scoreOf = t => lbTab==='r32' ? t.pts : lbTab==='r16' ? t.octpts : t.actpts;
   const ranked = PARTICIPANTS.map((p,i)=>({name:p.name, hasOct:!!p.octbr, ...totals[i]}))
