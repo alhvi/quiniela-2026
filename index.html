@@ -401,6 +401,7 @@ function setLbTab(tab){
   lbTab = tab;
   document.querySelectorAll('.lb-tab').forEach(b => b.classList.toggle('active', b.dataset.lbtab===tab));
   renderLb();
+  saveTabState();
 }
 
 function pointsFor(p, id){
@@ -628,6 +629,7 @@ function saveTabState(){
   const r = document.querySelector('#ronda-tabs .tab.active');
   sessionStorage.setItem('q2026_oct_tab', JSON.stringify({
     view: v?.dataset.view ?? 'fecha', fechaTab: f?.dataset.tab ?? null, rondaTab: r?.dataset.tab ?? null,
+    lbTab,
   }));
 }
 
@@ -639,6 +641,7 @@ buildUI();
     if(saved.view && saved.view!=='fecha') showView(saved.view);
     if(saved.fechaTab) switchTab(saved.fechaTab, 'fecha-tabs', 'fecha-panels');
     if(saved.rondaTab) switchTab(saved.rondaTab, 'ronda-tabs', 'ronda-panels');
+    if(saved.lbTab) setLbTab(saved.lbTab);
   } else {
     const now = new Date();
     const dk = (now.getMonth()+1)*100 + now.getDate();
