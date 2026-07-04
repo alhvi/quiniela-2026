@@ -475,16 +475,8 @@ function renderLb(){
     const rankCls = rank===1?'rank-1':rank===2?'rank-2':rank===3?'rank-3':'';
     const medal = rank===1?'🥇':rank===2?'🥈':rank===3?'🥉':rank;
     const champStr = p.champ ? `<span class="lb-champ">🏆 ${p.champ.n}</span> · ` : '';
-    const octStr = p.hasOct ? `8avos+: ${p.octPlusPts}` : `<span style="color:#484f58">8avos: pendiente</span>`;
     const checksStr = `✅ ${ex} marcador exacto · 🟡 ${rs} resultado`;
-    let detail = '';
-    if(lbTab==='total'){
-      detail = `${champStr}16avos: ${p.r32pts} + ${octStr} · ${checksStr}`;
-    } else if(lbTab==='octPlus'){
-      detail = `${champStr}8avos+: ${p.octPlusPts} · (16avos: ${p.r32pts}) · ${checksStr}`;
-    } else {
-      detail = `${champStr}${checksStr}`;
-    }
+    const detail = `${champStr}${checksStr}`;
     return `<div class="lb-row ${rankCls}">
       <div class="lb-num">${medal}</div>
       <div class="lb-info">
