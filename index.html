@@ -428,18 +428,27 @@ function pointsFor(p, id){
 
 function getTotals(){
   return PARTICIPANTS.map(p=>{
-    let exact=0, result=0;
     const byRound = {r32:0, r16:0, qf:0, sf:0, fin:0};
+    const exactBy = {r32:0, r16:0, qf:0, sf:0, fin:0};
+    const resultBy = {r32:0, r16:0, qf:0, sf:0, fin:0};
     ORDER.forEach(id=>{
       const n = pointsFor(p, id);
-      if(n===3){ exact++; byRound[ROUND_KEY[id]]+=3; }
-      else if(n===1){ result++; byRound[ROUND_KEY[id]]+=1; }
+      const rk = ROUND_KEY[id];
+      if(n===3){ exactBy[rk]++; byRound[rk]+=3; }
+      else if(n===1){ resultBy[rk]++; byRound[rk]+=1; }
     });
     const r32pts = byRound.r32;
     const r16pts = byRound.r16;
     const octPlusPts = byRound.r16 + byRound.qf + byRound.sf + byRound.fin;
+    const sumOf = obj => obj.r16+obj.qf+obj.sf+obj.fin;
     const champ = p.octbr ? p.octbr.win['final'] : null;
-    return {pts: r32pts+octPlusPts, r32pts, r16pts, octPlusPts, exact, result, champ};
+    return {
+      pts: r32pts+octPlusPts, r32pts, r16pts, octPlusPts, champ,
+      r32Exact: exactBy.r32, r32Result: resultBy.r32,
+      r16Exact: exactBy.r16, r16Result: resultBy.r16,
+      octPlusExact: sumOf(exactBy), octPlusResult: sumOf(resultBy),
+      exact: exactBy.r32+sumOf(exactBy), result: resultBy.r32+sumOf(resultBy),
+    };
   });
 }
 
@@ -453,27 +462,29 @@ function renderLb(){
   const totals = getTotals();
 
   const scoreOf = t => lbTab==='r32' ? t.r32pts : lbTab==='r16' ? t.r16pts : lbTab==='octPlus' ? t.octPlusPts : t.pts;
+  const exactOf = t => lbTab==='r32' ? t.r32Exact : lbTab==='r16' ? t.r16Exact : lbTab==='octPlus' ? t.octPlusExact : t.exact;
+  const resultOf = t => lbTab==='r32' ? t.r32Result : lbTab==='r16' ? t.r16Result : lbTab==='octPlus' ? t.octPlusResult : t.result;
   const ranked = PARTICIPANTS.map((p,i)=>({name:p.name, hasOct:!!p.octbr, ...totals[i]}))
-    .sort((a,b)=> scoreOf(b)-scoreOf(a) || b.exact-a.exact || a.name.localeCompare(b.name));
+    .sort((a,b)=> scoreOf(b)-scoreOf(a) || exactOf(b)-exactOf(a) || a.name.localeCompare(b.name));
 
   let rank=1, prev={s:-1,exact:-1};
   document.getElementById('lbList').innerHTML = ranked.map((p,i)=>{
-    const s = scoreOf(p);
-    if(s!==prev.s||p.exact!==prev.exact) rank=i+1;
-    prev={s,exact:p.exact};
+    const s = scoreOf(p), ex = exactOf(p), rs = resultOf(p);
+    if(s!==prev.s||ex!==prev.exact) rank=i+1;
+    prev={s,exact:ex};
     const rankCls = rank===1?'rank-1':rank===2?'rank-2':rank===3?'rank-3':'';
     const medal = rank===1?'🥇':rank===2?'🥈':rank===3?'🥉':rank;
     const champStr = p.champ ? `<span class="lb-champ">🏆 ${p.champ.n}</span> · ` : '';
     const octStr = p.hasOct ? `8avos+: ${p.octPlusPts}` : `<span style="color:#484f58">8avos: pendiente</span>`;
     let detail = '';
     if(lbTab==='r32'){
-      detail = `${champStr}16avos: ${p.r32pts} · ${octStr} · ✅ ${p.exact} 🟡 ${p.result}`;
+      detail = `${champStr}16avos: ${p.r32pts} · ${octStr} · ✅ ${ex} 🟡 ${rs}`;
     } else if(lbTab==='r16'){
-      detail = `${champStr}8avos: ${p.r16pts} · (16avos: ${p.r32pts}) · ✅ ${p.exact} 🟡 ${p.result}`;
+      detail = `${champStr}8avos: ${p.r16pts} · (16avos: ${p.r32pts}) · ✅ ${ex} 🟡 ${rs}`;
     } else if(lbTab==='octPlus'){
-      detail = `${champStr}8avos+: ${p.octPlusPts} · (16avos: ${p.r32pts}) · ✅ ${p.exact} 🟡 ${p.result}`;
+      detail = `${champStr}8avos+: ${p.octPlusPts} · (16avos: ${p.r32pts}) · ✅ ${ex} 🟡 ${rs}`;
     } else {
-      detail = `${champStr}16avos: ${p.r32pts} + ${octStr} · ✅ ${p.exact} 🟡 ${p.result}`;
+      detail = `${champStr}16avos: ${p.r32pts} + ${octStr} · ✅ ${ex} 🟡 ${rs}`;
     }
     return `<div class="lb-row ${rankCls}">
       <div class="lb-num">${medal}</div>
