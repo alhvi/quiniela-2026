@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Mi Bracket Octavos · Mundial 2026</title>
+<style>
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+    background: #eef1f5; color: #1f2328;
+    min-height: 100vh; padding-bottom: 90px;
+  }
+
+  /* ── Header ── */
+  .app-header {
+    position: sticky; top: 0; z-index: 20; background: #ffffff;
+    border-bottom: 1px solid #d0d7de; padding: 10px 14px;
+    box-shadow: 0 1px 3px rgba(31,35,40,0.06);
+  }
+  .app-title { font-size: 1.05em; font-weight: 800; display: flex; align-items: center; gap: 6px; color: #0a3069; }
+  .name-row { display: flex; align-items: center; gap: 8px; margin-top: 8px; }
+  .name-row label { font-size: 0.8em; color: #656d76; flex-shrink: 0; }
+  .name-row input {
+    flex: 1; background: #f6f8fa; border: 1px solid #d0d7de; border-radius: 8px;
+    color: #1f2328; padding: 8px 10px; font-size: 0.95em; min-width: 0;
+  }
+  .name-row input:focus { outline: none; border-color: #0969da; background: #fff; }
+
+  /* ── Stepper ── */
+  .stepper { display: flex; gap: 4px; padding: 10px 14px 4px; }
+  .step {
+    flex: 1; text-align: center; font-size: 0.62em; font-weight: 700;
+    text-transform: uppercase; letter-spacing: .3px; color: #8c959f;
+    padding-bottom: 6px; border-bottom: 2px solid #d0d7de;
+  }
+  .step.active { color: #0969da; border-bottom-color: #0969da; }
+  .step.done { color: #1a7f37; border-bottom-color: #2da44e; }
+
+  .round-title { padding: 12px 14px 2px; font-size: 1.15em; font-weight: 800; }
+  .round-sub { padding: 0 14px 8px; font-size: 0.8em; color: #656d76; }
+
+  .side-label {
+    padding: 10px 14px 4px; font-size: 0.72em; font-weight: 700;
+    text-transform: uppercase; letter-spacing: .5px; color: #8c959f;
+  }
+
+  /* ── Match card ── */
+  .matches { padding: 0 14px; }
+  .mcard {
+    background: #ffffff; border: 1px solid #d8dee4; border-radius: 12px;
+    padding: 8px; margin-bottom: 10px; box-shadow: 0 1px 2px rgba(31,35,40,0.05);
+  }
+  .mcard-date { font-size: 0.66em; color: #8c959f; text-align: center; margin-bottom: 6px; }
+  .mcard.third { border-color: #cd7f32; border-width: 2px; }
+  .mcard.third .mcard-date { color: #b45309; font-weight: 700; }
+  .mcard.final-card { border-color: #d4af37; border-width: 2px; }
+  .mcard.final-card .mcard-date { color: #9a6700; font-weight: 700; }
+
+  .team-row { display: flex; gap: 6px; align-items: stretch; }
+  .team-row + .team-row { margin-top: 6px; }
+  .team-disp {
+    flex: 1; min-width: 0;
+    display: flex; align-items: center; gap: 10px;
+    background: #f6f8fa; border: 2px solid #d0d7de; border-radius: 9px;
+    padding: 11px 12px; color: #1f2328; font-size: 1em; font-weight: 600;
+    text-align: left; transition: all .12s;
+  }
+  .team-disp img { width: 30px; height: 21px; border-radius: 3px; flex-shrink: 0; object-fit: cover; }
+  .team-disp .tn { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .team-disp .pick-mark { font-size: 1.1em; opacity: 0; flex-shrink: 0; color: #1a7f37; }
+  .team-disp.sel { border-color: #2da44e; background: #dafbe1; color: #0a3322; }
+  .team-disp.sel .pick-mark { opacity: 1; }
+  .team-disp.tbd { opacity: 0.55; }
+  .team-disp .tn.placeholder { color: #8c959f; font-style: italic; font-weight: 500; }
+  .goal-inp {
+    width: 46px; flex-shrink: 0; text-align: center;
+    background: #fff; border: 2px solid #d0d7de; border-radius: 9px;
+    color: #1f2328; font-size: 1.1em; font-weight: 800; padding: 0;
+    -moz-appearance: textfield;
+  }
+  .goal-inp::-webkit-outer-spin-button, .goal-inp::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+  .goal-inp:focus { outline: none; border-color: #0969da; }
+  .goal-inp:disabled { opacity: 0.4; background: #f6f8fa; }
+  .goal-inp.win { border-color: #2da44e; background: #dafbe1; }
+
+  .tie-note {
+    display: none; margin-top: 8px; padding: 7px 10px; border-radius: 9px;
+    background: #fff1e0; border: 1px solid #f0c89a; color: #9a4d00;
+    font-size: 0.76em; font-weight: 600;
+  }
+  .tie-note.show { display: block; }
+
+  /* ── Footer ── */
+  .footer {
+    position: fixed; bottom: 0; left: 0; right: 0; z-index: 20;
+    background: #ffffff; border-top: 1px solid #d0d7de;
+    padding: 12px 14px calc(12px + env(safe-area-inset-bottom));
+    display: flex; gap: 10px; box-shadow: 0 -1px 4px rgba(31,35,40,0.06);
+  }
+  .btn {
+    flex: 1; padding: 14px; border-radius: 10px; border: none;
+    font-size: 1em; font-weight: 700; cursor: pointer;
+  }
+  .btn-back { flex: 0 0 auto; background: #eaeef2; color: #57606a; padding: 14px 18px; }
+  .btn-next { background: #2da44e; color: #fff; }
+  .btn-next:disabled { background: #eaeef2; color: #a0a8b0; cursor: not-allowed; }
+  .btn-prog { font-size: 0.72em; font-weight: 600; color: #656d76; text-align: center; margin-bottom: 6px; }
+
+  /* ── Result screen ── */
+  .result { padding: 16px 14px; }
+  .result h2 { font-size: 1.25em; margin: 0 0 12px; }
+  .share-hint {
+    background: #ddf4ff; border: 1px solid #b6e3ff; border-radius: 10px;
+    padding: 10px 12px; font-size: 0.82em; color: #0a3069; margin-bottom: 14px;
+  }
+  .share-hint b { color: #0550ae; }
+
+  .shot {
+    background: #ffffff; border: 1px solid #d8dee4; border-radius: 14px;
+    overflow: hidden; box-shadow: 0 2px 8px rgba(31,35,40,0.08); margin-bottom: 16px;
+  }
+  .shot-head {
+    background: linear-gradient(135deg, #0a3069, #0969da); color: #fff;
+    padding: 14px 16px;
+  }
+  .shot-head .sh-sub { font-size: 0.72em; opacity: 0.85; letter-spacing: .5px; text-transform: uppercase; }
+  .shot-head .sh-name { font-size: 1.3em; font-weight: 800; margin-top: 2px; }
+  .champ-banner {
+    display: flex; align-items: center; gap: 12px; padding: 14px 16px;
+    background: linear-gradient(135deg, #fff8e1, #ffedb3); border-bottom: 1px solid #f0e0a8;
+  }
+  .champ-banner img { width: 46px; height: 32px; border-radius: 4px; object-fit: cover; box-shadow: 0 1px 3px rgba(0,0,0,.2); }
+  .champ-banner .cb-lbl { font-size: 0.7em; font-weight: 700; color: #9a6700; text-transform: uppercase; letter-spacing: .5px; }
+  .champ-banner .cb-name { font-size: 1.35em; font-weight: 800; color: #7a4f01; }
+  .shot-body { padding: 6px 16px 14px; }
+  .sum-group { margin-top: 12px; }
+  .sum-group h3 { font-size: 0.72em; color: #8c959f; text-transform: uppercase; letter-spacing: .5px; margin: 0 0 4px; font-weight: 800; }
+  .sum-row { display: flex; align-items: center; gap: 8px; padding: 5px 0; border-bottom: 1px solid #eaeef2; font-size: 0.9em; }
+  .sum-row:last-child { border-bottom: none; }
+  .sum-row .sr-date { flex: 0 0 52px; font-size: 0.78em; color: #8c959f; }
+  .sum-row .sr-flag { width: 22px; height: 15px; border-radius: 2px; object-fit: cover; flex-shrink: 0; }
+  .sum-row .sr-name { flex: 1; font-weight: 700; }
+  .sum-row .sr-score { flex: 0 0 auto; font-weight: 800; color: #57606a; font-size: 0.85em; }
+  .shot-foot { padding: 8px 16px; background: #f6f8fa; font-size: 0.68em; color: #8c959f; text-align: center; }
+
+  .code-box {
+    background: #f6f8fa; border: 1px dashed #adbac7; border-radius: 10px;
+    padding: 12px; font-family: 'SF Mono', Consolas, monospace; font-size: 0.8em;
+    word-break: break-all; color: #0550ae; margin-bottom: 12px; line-height: 1.5;
+  }
+  .code-label { font-size: 0.78em; color: #656d76; margin-bottom: 6px; font-weight: 600; }
+  .result-btns { display: flex; flex-direction: column; gap: 10px; }
+  .btn-wa { background: #25d366; color: #06321a; text-decoration: none; text-align: center; }
+  .btn-copy { background: #0969da; color: #fff; }
+  .btn-edit { background: #eaeef2; color: #57606a; }
+
+  /* ── Organizer ── */
+  .org { margin: 24px 14px 0; border-top: 1px solid #d0d7de; padding-top: 16px; }
+  .org summary { font-size: 0.85em; color: #656d76; cursor: pointer; }
+  .org textarea {
+    width: 100%; margin-top: 10px; background: #fff; border: 1px solid #d0d7de;
+    border-radius: 8px; color: #1f2328; padding: 10px; font-size: 0.85em;
+    font-family: monospace; min-height: 70px; resize: vertical;
+  }
+  .org .btn-load { background: #0969da; color: #fff; margin-top: 8px; width: 100%; }
+  .org-result { margin-top: 14px; }
+  .hide { display: none !important; }
+  .toast {
+    position: fixed; bottom: 100px; left: 50%; transform: translateX(-50%);
+    background: #1a7f37; color: #fff; padding: 10px 18px; border-radius: 20px;
+    font-size: 0.9em; font-weight: 600; z-index: 50; opacity: 0; transition: opacity .2s;
+    pointer-events: none; box-shadow: 0 2px 8px rgba(0,0,0,.2);
+  }
+  .toast.show { opacity: 1; }
+</style>
+</head>
+<body>
+
+<div class="app-header">
+  <div class="app-title">⚽ Mi Bracket Octavos · Mundial 2026</div>
+  <div class="name-row" id="nameRow">
+    <label>Tu nombre:</label>
+    <input id="nameInput" type="text" placeholder="Escribí tu nombre" autocomplete="off">
+  </div>
+</div>
+
+<div id="fillScreen">
+  <div class="stepper" id="stepper"></div>
+  <div class="round-title" id="roundTitle"></div>
+  <div class="round-sub" id="roundSub"></div>
+  <div id="roundBody"></div>
+</div>
+
+<div id="resultScreen" class="hide"></div>
+
+<details class="org" id="orgSection">
+  <summary>🔐 Organizador · cargar un código recibido</summary>
+  <textarea id="orgInput" placeholder="Pegá aquí el código Q26O que te enviaron por WhatsApp"></textarea>
+  <button class="btn btn-load" onclick="loadCode()">Cargar bracket</button>
+  <div class="org-result" id="orgResult"></div>
+</details>
+
+<div class="footer" id="footer">
+  <button class="btn btn-back hide" id="btnBack" onclick="prevRound()">←</button>
+  <div style="flex:1">
+    <div class="btn-prog" id="progLabel"></div>
+    <button class="btn btn-next" id="btnNext" onclick="nextRound()" disabled>Siguiente →</button>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ════════════ DATA ════════════
+const T = (n, f) => ({ n, f });
+const MATCHDEF = {
+  // ── Octavos (equipos conocidos) ──
+  lr16_1: { base:true, teams:[T('Canadá','ca'),        T('Marruecos','ma')],    date:'Sáb 5 Jul · 11:00 AM' },
+  lr16_2: { base:true, teams:[T('Paraguay','py'),      T('Francia','fr')],      date:'Sáb 5 Jul · 3:00 PM' },
+  lr16_3: { base:true, teams:[T('Bélgica','be'),       T('EE.UU.','us')],       date:'Lun 7 Jul · 6:00 PM' },
+  lr16_4: { base:true, teams:[T('España','es'),        T('Portugal','pt')],     date:'Lun 7 Jul · 1:00 PM' },
+  rr16_1: { base:true, teams:[T('Brasil','br'),        T('Noruega','no')],      date:'Dom 6 Jul · 2:00 PM' },
+  rr16_2: { base:true, teams:[T('México','mx'),        T('Inglaterra','gb-eng')],date:'Dom 6 Jul · 6:00 PM' },
+  rr16_3: { base:true, teams:[T('Suiza','ch'),         T('Colombia','co')],     date:'Mar 8 Jul · 2:00 PM' },
+  rr16_4: { base:true, teams:[T('Egipto','eg'),        T('Argentina','ar')],    date:'Mar 8 Jul · 10:00 AM' },
+  // ── Cuartos ──
+  lqf_1: { feeders:['lr16_1','lr16_2'], date:'Jue 10 Jul · 2:00 PM' },
+  lqf_2: { feeders:['lr16_3','lr16_4'], date:'Vie 11 Jul · 1:00 PM' },
+  rqf_1: { feeders:['rr16_1','rr16_2'], date:'Sáb 12 Jul · 3:00 PM' },
+  rqf_2: { feeders:['rr16_3','rr16_4'], date:'Sáb 12 Jul · 7:00 PM' },
+  // ── Semis ──
+  lsf: { feeders:['lqf_1','lqf_2'], date:'Mar 15 Jul · 1:00 PM' },
+  rsf: { feeders:['rqf_1','rqf_2'], date:'Mié 16 Jul · 1:00 PM' },
+  // ── Final / 3er lugar ──
+  final: { feeders:['lsf','rsf'], date:'Dom 20 Jul · 1:00 PM' },
+  third: { feeders:['lsf','rsf'], losers:true, date:'Sáb 19 Jul · 8:00 PM' },
+};
+
+const ROUNDS = [
+  { key:'r16', label:'Octavos', title:'Octavos de final', sub:'8 partidos · anotá el marcador de cada partido.',
+    groups:[ {lbl:'Lado A', ids:['lr16_1','lr16_2','lr16_3','lr16_4']},
+             {lbl:'Lado B', ids:['rr16_1','rr16_2','rr16_3','rr16_4']} ] },
+  { key:'qf',  label:'Cuartos', title:'Cuartos de final', sub:'4 partidos.',
+    groups:[ {lbl:'Lado A', ids:['lqf_1','lqf_2']}, {lbl:'Lado B', ids:['rqf_1','rqf_2']} ] },
+  { key:'sf',  label:'Semis',   title:'Semifinales', sub:'2 partidos.',
+    groups:[ {lbl:null, ids:['lsf','rsf']} ] },
+  { key:'final',label:'Final',  title:'Final y 3er lugar', sub:'El partido grande y el bronce.',
+    groups:[ {lbl:null, ids:['final','third']} ] },
+];
+
+// Orden fijo para codificar (16 partidos)
+const ORDER = [
+  'lr16_1','lr16_2','lr16_3','lr16_4','rr16_1','rr16_2','rr16_3','rr16_4',
+  'lqf_1','lqf_2','rqf_1','rqf_2','lsf','rsf','final','third',
+];
+const ROUND_OF = {};
+ROUNDS.forEach((r,ri)=> r.groups.forEach(g=> g.ids.forEach(id=> ROUND_OF[id]=ri)));
+
+// ════════════ STATE ════════════
+let scores = {};
+let picks  = {};
+let name   = '';
+let cur    = 0;
+const LS = 'q26_oct_bracket';
+
+function save(){ localStorage.setItem(LS, JSON.stringify({name, scores, cur})); }
+function load(){
+  try {
+    const s = JSON.parse(localStorage.getItem(LS)||'null');
+    if(s){ name=s.name||''; scores=s.scores||{}; cur=s.cur||0; }
+  } catch(e){}
+  recompute();
+}
+
+function resultOf(id){
+  const s = scores[id];
+  if(!s || s[0]==null || s[1]==null) return null;
+  if(s[0] > s[1]) return 0;
+  if(s[1] > s[0]) return 1;
+  return null;
+}
+function recompute(){
+  picks = {};
+  ORDER.forEach(id => { picks[id] = resultOf(id); });
+}
+function isTie(id){
+  const s = scores[id];
+  return !!(s && s[0]!=null && s[1]!=null && s[0]===s[1]);
+}
+function clearDownstream(ri){
+  ORDER.forEach(mid => { if(ROUND_OF[mid] > ri){ delete scores[mid]; } });
+}
+
+// ════════════ BRACKET LOGIC ════════════
+function candidatesOf(id, pk){
+  const d = MATCHDEF[id];
+  if(d.base) return d.teams;
+  const [f0,f1] = d.feeders;
+  if(d.losers) return [loserOf(f0,pk), loserOf(f1,pk)];
+  return [winnerOf(f0,pk), winnerOf(f1,pk)];
+}
+function winnerOf(id, pk){
+  const c = candidatesOf(id, pk); const p = pk[id];
+  return (p==null) ? null : c[p];
+}
+function loserOf(id, pk){
+  const c = candidatesOf(id, pk); const p = pk[id];
+  return (p==null) ? null : c[1-p];
+}
+
+function setScore(id, side, val){
+  let v = val.replace(/[^0-9]/g,'').slice(0,2);
+  if(!scores[id]) scores[id] = [null, null];
+  scores[id][side] = (v==='') ? null : Math.min(20, parseInt(v,10));
+  const oldW = picks[id];
+  recompute();
+  if(picks[id] !== oldW){ clearDownstream(ROUND_OF[id]); recompute(); }
+  updateMatchVisual(id);
+  renderStepper(); renderFooter();
+  save();
+}
+function updateMatchVisual(id){
+  const w = picks[id];
+  [0,1].forEach(side=>{
+    const disp = document.querySelector(`.team-disp[data-team="${id}-${side}"]`);
+    const inp  = document.querySelector(`.goal-inp[data-mid="${id}"][data-side="${side}"]`);
+    if(disp) disp.classList.toggle('sel', w===side);
+    if(inp)  inp.classList.toggle('win', w===side);
+  });
+  const tn = document.querySelector(`.tie-note[data-tie="${id}"]`);
+  if(tn) tn.classList.toggle('show', isTie(id));
+}
+
+function roundComplete(ri){
+  return ROUNDS[ri].groups.every(g => g.ids.every(id => picks[id]!=null));
+}
+
+// ════════════ RENDER ════════════
+function renderStepper(){
+  document.getElementById('stepper').innerHTML = ROUNDS.map((r,i)=>{
+    let cls = 'step';
+    if(i===cur) cls+=' active';
+    else if(roundComplete(i)) cls+=' done';
+    return `<div class="${cls}">${r.label}</div>`;
+  }).join('');
+}
+
+function teamRow(id, side, cand){
+  if(!cand){
+    return `<div class="team-row">
+      <div class="team-disp tbd"><span class="tn placeholder">Por definir</span></div>
+      <input class="goal-inp" disabled>
+    </div>`;
+  }
+  const sel = picks[id]===side ? ' sel' : '';
+  const flag = cand.f ? `<img src="https://flagcdn.com/h40/${cand.f}.png" alt="">` : '';
+  const sc = (scores[id] && scores[id][side]!=null) ? scores[id][side] : '';
+  const winCls = picks[id]===side ? ' win' : '';
+  return `<div class="team-row">
+    <div class="team-disp${sel}" data-team="${id}-${side}">
+      ${flag}<span class="tn">${cand.n}</span><span class="pick-mark">✓</span>
+    </div>
+    <input class="goal-inp${winCls}" type="text" inputmode="numeric" pattern="[0-9]*"
+      data-mid="${id}" data-side="${side}" value="${sc}"
+      oninput="setScore('${id}',${side},this.value)" aria-label="Goles de ${cand.n}">
+  </div>`;
+}
+
+function matchCard(id){
+  const d = MATCHDEF[id];
+  const cands = candidatesOf(id, picks);
+  let cls = 'mcard';
+  let dateLabel = d.date;
+  if(id==='third'){ cls+=' third'; dateLabel = '🥉 3er Lugar · ' + d.date; }
+  if(id==='final'){ cls+=' final-card'; dateLabel = '🏆 Final · ' + d.date; }
+  const bothCands = cands[0] && cands[1];
+  const tieHtml = bothCands ? `
+    <div class="tie-note${isTie(id)?' show':''}" data-tie="${id}">⚠️ En eliminatoria no puede quedar empate — cambiá el marcador.</div>` : '';
+  return `<div class="${cls}" data-card="${id}">
+    <div class="mcard-date">${dateLabel}</div>
+    ${teamRow(id, 0, cands[0])}
+    ${teamRow(id, 1, cands[1])}
+    ${tieHtml}
+  </div>`;
+}
+
+function renderRound(){
+  const r = ROUNDS[cur];
+  document.getElementById('roundTitle').textContent = r.title;
+  document.getElementById('roundSub').innerHTML = r.sub + ' <span style="color:#8c959f">· anotá el marcador; avanza el de más goles.</span>';
+  let html = '';
+  r.groups.forEach(g=>{
+    if(g.lbl) html += `<div class="side-label">${g.lbl}</div>`;
+    html += `<div class="matches">${g.ids.map(matchCard).join('')}</div>`;
+  });
+  document.getElementById('roundBody').innerHTML = html;
+  renderStepper();
+  renderFooter();
+}
+
+function renderFooter(){
+  const back = document.getElementById('btnBack');
+  const next = document.getElementById('btnNext');
+  const prog = document.getElementById('progLabel');
+  back.classList.toggle('hide', cur===0);
+  const done = roundComplete(cur);
+  const total = ROUNDS[cur].groups.reduce((a,g)=>a+g.ids.length,0);
+  const filled = ROUNDS[cur].groups.reduce((a,g)=>a+g.ids.filter(id=>picks[id]!=null).length,0);
+  prog.textContent = `${filled} / ${total} completos`;
+  next.disabled = !done;
+  if(cur === ROUNDS.length-1){
+    next.textContent = '✅ Generar mi código';
+  } else {
+    next.textContent = `Siguiente: ${ROUNDS[cur+1].label} →`;
+  }
+}
+
+function nextRound(){
+  if(!roundComplete(cur)) return;
+  if(cur === ROUNDS.length-1){ showResult(); return; }
+  cur++; save(); window.scrollTo(0,0); renderRound();
+}
+function prevRound(){
+  if(cur>0){ cur--; save(); window.scrollTo(0,0); renderRound(); }
+}
+
+// ════════════ ENCODE / DECODE ════════════
+function scoresToHex(){
+  const h = v => (v==null) ? 'f' : Math.min(14, Math.max(0, v)).toString(16);
+  return ORDER.map(id => { const s = scores[id]||[null,null]; return h(s[0])+h(s[1]); }).join('');
+}
+function hexToScores(hex){
+  const sc = {};
+  ORDER.forEach((id,i)=>{
+    const a = hex[i*2], b = hex[i*2+1];
+    const dv = c => (c===undefined||c==='f') ? null : parseInt(c,16);
+    const av = dv(a), bv = dv(b);
+    if(av!=null || bv!=null) sc[id] = [av, bv];
+  });
+  return sc;
+}
+function encode(){
+  let bits = ORDER.map(id => picks[id] ? '1':'0').join('');
+  const bytes = [];
+  for(let i=0;i<bits.length;i+=8) bytes.push(parseInt(bits.slice(i,i+8).padEnd(8,'0'),2));
+  const bin = String.fromCharCode(...bytes);
+  const payload = JSON.stringify({ v:1, n:name, p:btoa(bin), s:scoresToHex() });
+  const b64 = btoa(unescape(encodeURIComponent(payload)))
+    .replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
+  return 'Q26O' + b64;
+}
+function decode(code){
+  code = code.trim();
+  if(!code.startsWith('Q26O')) throw new Error('Código inválido (debe empezar con Q26O)');
+  let b64 = code.slice(4).replace(/-/g,'+').replace(/_/g,'/');
+  while(b64.length%4) b64 += '=';
+  const payload = JSON.parse(decodeURIComponent(escape(atob(b64))));
+  const bin = atob(payload.p);
+  let bits = '';
+  for(let i=0;i<bin.length;i++) bits += bin.charCodeAt(i).toString(2).padStart(8,'0');
+  const pk = {};
+  ORDER.forEach((id,i)=> pk[id] = bits[i]==='1' ? 1 : 0);
+  const sc = payload.s ? hexToScores(payload.s) : {};
+  return { name: payload.n||'(sin nombre)', picks: pk, scores: sc };
+}
+function scoreStr(id, pk, sc){
+  const s = sc[id];
+  if(!s || (s[0]==null && s[1]==null)) return '';
+  return `${s[0]==null?'·':s[0]} - ${s[1]==null?'·':s[1]}`;
+}
+
+// ════════════ RESULT SCREEN ════════════
+function showResult(){
+  if(!name.trim()){
+    document.getElementById('nameInput').focus();
+    showToast('Escribí tu nombre primero ☝️');
+    return;
+  }
+  recompute();
+  const code = encode();
+  const champ = winnerOf('final', picks);
+  const third = winnerOf('third', picks);
+  const fc = candidatesOf('final', picks);
+  const fw = picks['final'];
+  const finalRival = (fw==null) ? null : fc[1-fw];
+  const wa = `https://wa.me/?text=${encodeURIComponent('⚽ Mi bracket Octavos Mundial 2026 ('+name+'):\n'+code)}`;
+
+  const flagImg = (t, cls) => t && t.f ? `<img class="${cls}" src="https://flagcdn.com/h40/${t.f}.png" alt="">` : '';
+
+  const groups = [
+    ['Octavos de final', ['lr16_1','lr16_2','lr16_3','lr16_4','rr16_1','rr16_2','rr16_3','rr16_4']],
+    ['Cuartos de final', ['lqf_1','lqf_2','rqf_1','rqf_2']],
+    ['Semifinales', ['lsf','rsf']],
+    ['Final y 3er lugar', ['final','third']],
+  ];
+  let sum = '';
+  groups.forEach(([lbl,ids])=>{
+    let rows = '';
+    ids.forEach(id=>{
+      const w = winnerOf(id, picks);
+      const ss = scoreStr(id, picks, scores);
+      const tag = id==='final' ? '🏆' : id==='third' ? '🥉' : MATCHDEF[id].date.split(' · ')[0];
+      rows += `<div class="sum-row">
+        <span class="sr-date">${tag}</span>
+        ${flagImg(w,'sr-flag')}
+        <span class="sr-name">${w?w.n:'—'}</span>
+        <span class="sr-score">${ss||''}</span>
+      </div>`;
+    });
+    sum += `<div class="sum-group"><h3>${lbl}</h3>${rows}</div>`;
+  });
+
+  document.getElementById('fillScreen').classList.add('hide');
+  document.getElementById('footer').classList.add('hide');
+  const rs = document.getElementById('resultScreen');
+  rs.classList.remove('hide');
+  rs.innerHTML = `
+    <div class="result">
+      <h2>¡Listo, ${name}! 🎉</h2>
+      <div class="share-hint">
+        Mandale tu bracket al organizador de <b>una de estas dos formas</b>:
+        <br>📸 una <b>captura de pantalla</b> de la tarjeta de abajo, &nbsp;o&nbsp; 📋 el <b>código</b>.
+      </div>
+
+      <div class="shot" id="shotCard">
+        <div class="shot-head">
+          <div class="sh-sub">⚽ Quiniela Octavos · Mundial 2026</div>
+          <div class="sh-name">${name}</div>
+        </div>
+        <div class="champ-banner">
+          ${flagImg(champ,'')}
+          <div>
+            <div class="cb-lbl">🏆 Mi campeón</div>
+            <div class="cb-name">${champ?champ.n:'—'}</div>
+          </div>
+        </div>
+        <div class="shot-body">
+          <div class="sum-row" style="border-bottom:none;padding-top:8px">
+            <span class="sr-date">Final</span>
+            <span class="sr-name">${champ?champ.n:'—'} <span style="color:#8c959f;font-weight:500">vs</span> ${finalRival?finalRival.n:'—'}</span>
+            <span class="sr-score">${scoreStr('final',picks,scores)||''}</span>
+          </div>
+          ${sum}
+        </div>
+        <div class="shot-foot">Generado en la app · ${new Date().toLocaleDateString('es')}</div>
+      </div>
+
+      <div class="code-label">📋 O copiá tu código y mandalo por WhatsApp:</div>
+      <div class="code-box" id="codeBox">${code}</div>
+      <div class="result-btns">
+        <a class="btn btn-wa" href="${wa}" target="_blank" rel="noopener">📲 Enviar código por WhatsApp</a>
+        <button class="btn btn-copy" onclick="copyCode('${code}')">📋 Copiar código</button>
+        <button class="btn btn-edit" onclick="backToFill()">✏️ Editar mi bracket</button>
+      </div>
+    </div>`;
+  window.scrollTo(0,0);
+}
+function backToFill(){
+  document.getElementById('resultScreen').classList.add('hide');
+  document.getElementById('fillScreen').classList.remove('hide');
+  document.getElementById('footer').classList.remove('hide');
+  renderRound();
+}
+function copyCode(code){
+  navigator.clipboard?.writeText(code).then(
+    ()=>showToast('Código copiado ✓'),
+    ()=>showToast('No se pudo copiar')
+  );
+}
+
+// ════════════ ORGANIZER ════════════
+function loadCode(){
+  const raw = document.getElementById('orgInput').value;
+  const out = document.getElementById('orgResult');
+  let data;
+  try { data = decode(raw); }
+  catch(e){ out.innerHTML = `<div style="color:#cf222e;font-size:0.85em">⚠️ ${e.message}</div>`; return; }
+  const pk = data.picks;
+  const sc = data.scores || {};
+  const champ = winnerOf('final', pk);
+  const third = winnerOf('third', pk);
+  let rows = '';
+  ORDER.forEach(id=>{
+    const cands = candidatesOf(id, pk);
+    const w = pk[id];
+    const s = sc[id] || [null,null];
+    const g = v => v==null ? '·' : v;
+    const nameCell = (i) => {
+      const c = cands[i]; if(!c) return '—';
+      const bold = w===i;
+      return `<span style="${bold?'font-weight:800;color:#1f2328':'color:#8c959f'}">${c.n}</span>`;
+    };
+    const tag = id==='final'?'🏆 FINAL':id==='third'?'🥉 3er':MATCHDEF[id].date.split(' · ')[0];
+    rows += `<div class="sum-row" style="gap:8px">
+      <span class="sr-date" style="flex:0 0 56px;font-size:0.78em">${tag}</span>
+      <span style="flex:1;text-align:right">${nameCell(0)}</span>
+      <span style="flex:0 0 44px;text-align:center;font-weight:700;color:#57606a">${g(s[0])}-${g(s[1])}</span>
+      <span style="flex:1">${nameCell(1)}</span>
+    </div>`;
+  });
+  out.innerHTML = `
+    <div style="background:#ffffff;border:1px solid #d8dee4;border-radius:10px;padding:12px;box-shadow:0 1px 3px rgba(31,35,40,0.06);">
+      <div style="font-weight:800;font-size:1.05em;margin-bottom:4px;">📋 Bracket de ${data.name}</div>
+      <div style="font-size:0.9em;color:#656d76;margin-bottom:10px">Campeón: <b style="color:#9a6700">${champ?champ.n:'—'}</b> · 3er: ${third?third.n:'—'}</div>
+      ${rows}
+    </div>`;
+}
+
+// ════════════ MISC ════════════
+let toastT;
+function showToast(msg){
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  clearTimeout(toastT); toastT = setTimeout(()=>t.classList.remove('show'), 1800);
+}
+
+document.getElementById('nameInput').addEventListener('input', e=>{ name = e.target.value; save(); });
+
+// init
+load();
+document.getElementById('nameInput').value = name;
+renderRound();
+</script>
+</body>
+</html>
