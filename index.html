@@ -149,7 +149,7 @@
   <div class="lb-tabs">
     <button class="lb-tab" data-lbtab="r32" onclick="setLbTab('r32')">16avos</button>
     <button class="lb-tab active" data-lbtab="r16" onclick="setLbTab('r16')">8avos</button>
-    <button class="lb-tab" data-lbtab="octPlus" onclick="setLbTab('octPlus')">Total (sin 16avos)</button>
+    <button class="lb-tab" data-lbtab="octPlus" onclick="setLbTab('octPlus')" style="display:none">Total (sin 16avos)</button>
     <button class="lb-tab" data-lbtab="total" onclick="setLbTab('total')">Total</button>
   </div>
   <div class="lb-list" id="lbList"></div>
@@ -639,7 +639,7 @@ buildUI();
     if(saved.view && saved.view!=='fecha') showView(saved.view);
     if(saved.fechaTab) switchTab(saved.fechaTab, 'fecha-tabs', 'fecha-panels');
     if(saved.rondaTab) switchTab(saved.rondaTab, 'ronda-tabs', 'ronda-panels');
-    if(saved.lbTab) setLbTab(saved.lbTab);
+    if(saved.lbTab && saved.lbTab!=='octPlus') setLbTab(saved.lbTab);
   } else {
     const now = new Date();
     const dk = (now.getMonth()+1)*100 + now.getDate();
