@@ -96,7 +96,6 @@
   .t-vs { color: #8b949e; font-size: 0.8em; font-weight: 400; flex-shrink: 0; }
   .card-score-row { display: flex; align-items: center; justify-content: center; gap: 10px; padding: 6px 12px 14px; }
   .score-side { display: flex; align-items: center; gap: 8px; }
-  .team-flag { height: 28px; border-radius: 3px; flex-shrink: 0; display: block; object-fit: cover; box-shadow: 0 1px 3px rgba(0,0,0,0.4); }
   .score-display { width: 64px; height: 64px; font-size: 1.8em; font-weight: 800; text-align: center; background: #0d1117; border: 2px solid #30363d; border-radius: 10px; color: #e6edf3; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
   .score-display.has-score { border-color: #3fb950; }
   .score-display.live-score { border-color: #cc2020; }
@@ -113,7 +112,6 @@
   .k-pred.result { border-color: rgba(232,184,75,0.3); background: rgba(232,184,75,0.07); }
   .kp-name { font-size: 0.92em; color: #8b949e; flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
   .kp-score { display: flex; align-items: center; gap: 3px; flex-shrink: 0; }
-  .kp-flag { height: 11px; border-radius: 2px; flex-shrink: 0; }
   .kp-sc { font-size: 0.88em; font-weight: 700; color: #e6edf3; white-space: nowrap; }
   .k-pred.exact  .kp-sc { color: #3fb950; }
   .k-pred.result .kp-sc { color: #e8b84b; }
@@ -254,7 +252,6 @@ const DATES = [...new Set(ORDER.map(id=>META[id].dateLabel))]
 
 const NAME_TO_TEAM = {};
 ORDER.forEach(id=>{ if(MATCHDEF[id].base) MATCHDEF[id].teams.forEach(t=>NAME_TO_TEAM[t.n]=t); });
-function flagOf(team, cls){ return team && team.f ? `<img class="${cls}" src="https://flagcdn.com/h40/${team.f}.png" alt="">` : ''; }
 
 // ── Participantes ──
 // r32p: picks de 16avos (16 chars), null si no participó en esa ronda
@@ -510,12 +507,12 @@ function realScoreRow(id){
     <span class="t-name away">${rc[1].n}</span>
   </div>
   <div class="card-score-row">
-    <div class="score-side">${flagOf(rc[0],'team-flag')}
+    <div class="score-side">
       <div class="score-display ${sc}">${has?real.h:'–'}</div>
     </div>
     <span class="score-dash">–</span>
     <div class="score-side">
-      <div class="score-display ${sc}">${has?real.a:'–'}</div>${flagOf(rc[1],'team-flag')}
+      <div class="score-display ${sc}">${has?real.a:'–'}</div>
     </div>
   </div>${penTag}`;
 }
@@ -534,10 +531,9 @@ function buildPreds(id){
     const n = pointsFor(p, id);
     const cls = n===3?'exact':n===1?'result':'';
     const badge = n!=null ? `<span class="kp-badge">${n>0?'+'+n:''}</span>` : `<span class="kp-badge"></span>`;
-    const f0 = flagOf(pc[0],'kp-flag'), f1 = flagOf(pc[1],'kp-flag');
     return `<div class="k-pred ${cls}">
       <span class="kp-name">${p.name}</span>
-      <span class="kp-score">${f0}<span class="kp-sc">${ps[0]}–${ps[1]}</span>${f1}</span>
+      <span class="kp-score"><span class="kp-sc">${ps[0]}–${ps[1]}</span></span>
       ${badge}
     </div>`;
   }).join('');
