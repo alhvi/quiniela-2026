@@ -216,7 +216,6 @@
 // ════════════ DATA ════════════
 const T = (n, f) => ({ n, f });
 const MATCHDEF = {
-  // ── Octavos (equipos conocidos) ──
   lr16_1: { base:true, teams:[T('Canadá','ca'),        T('Marruecos','ma')],    date:'Sáb 5 Jul · 11:00 AM' },
   lr16_2: { base:true, teams:[T('Paraguay','py'),      T('Francia','fr')],      date:'Sáb 5 Jul · 3:00 PM' },
   lr16_3: { base:true, teams:[T('Bélgica','be'),       T('EE.UU.','us')],       date:'Lun 7 Jul · 6:00 PM' },
@@ -225,35 +224,17 @@ const MATCHDEF = {
   rr16_2: { base:true, teams:[T('México','mx'),        T('Inglaterra','gb-eng')],date:'Dom 6 Jul · 6:00 PM' },
   rr16_3: { base:true, teams:[T('Suiza','ch'),         T('Colombia','co')],     date:'Mar 8 Jul · 2:00 PM' },
   rr16_4: { base:true, teams:[T('Egipto','eg'),        T('Argentina','ar')],    date:'Mar 8 Jul · 10:00 AM' },
-  // ── Cuartos ──
-  lqf_1: { feeders:['lr16_1','lr16_2'], date:'Jue 10 Jul · 2:00 PM' },
-  lqf_2: { feeders:['lr16_3','lr16_4'], date:'Vie 11 Jul · 1:00 PM' },
-  rqf_1: { feeders:['rr16_1','rr16_2'], date:'Sáb 12 Jul · 3:00 PM' },
-  rqf_2: { feeders:['rr16_3','rr16_4'], date:'Sáb 12 Jul · 7:00 PM' },
-  // ── Semis ──
-  lsf: { feeders:['lqf_1','lqf_2'], date:'Mar 15 Jul · 1:00 PM' },
-  rsf: { feeders:['rqf_1','rqf_2'], date:'Mié 16 Jul · 1:00 PM' },
-  // ── Final / 3er lugar ──
-  final: { feeders:['lsf','rsf'], date:'Dom 20 Jul · 1:00 PM' },
-  third: { feeders:['lsf','rsf'], losers:true, date:'Sáb 19 Jul · 8:00 PM' },
 };
 
 const ROUNDS = [
   { key:'r16', label:'Octavos', title:'Octavos de final', sub:'8 partidos · anotá el marcador de cada partido.',
     groups:[ {lbl:'Lado A', ids:['lr16_1','lr16_2','lr16_3','lr16_4']},
              {lbl:'Lado B', ids:['rr16_1','rr16_2','rr16_3','rr16_4']} ] },
-  { key:'qf',  label:'Cuartos', title:'Cuartos de final', sub:'4 partidos.',
-    groups:[ {lbl:'Lado A', ids:['lqf_1','lqf_2']}, {lbl:'Lado B', ids:['rqf_1','rqf_2']} ] },
-  { key:'sf',  label:'Semis',   title:'Semifinales', sub:'2 partidos.',
-    groups:[ {lbl:null, ids:['lsf','rsf']} ] },
-  { key:'final',label:'Final',  title:'Final y 3er lugar', sub:'El partido grande y el bronce.',
-    groups:[ {lbl:null, ids:['final','third']} ] },
 ];
 
-// Orden fijo para codificar (16 partidos)
+// Orden fijo para codificar (8 partidos)
 const ORDER = [
   'lr16_1','lr16_2','lr16_3','lr16_4','rr16_1','rr16_2','rr16_3','rr16_4',
-  'lqf_1','lqf_2','rqf_1','rqf_2','lsf','rsf','final','third',
 ];
 const ROUND_OF = {};
 ROUNDS.forEach((r,ri)=> r.groups.forEach(g=> g.ids.forEach(id=> ROUND_OF[id]=ri)));
@@ -480,37 +461,22 @@ function showResult(){
   }
   recompute();
   const code = encode();
-  const champ = winnerOf('final', picks);
-  const third = winnerOf('third', picks);
-  const fc = candidatesOf('final', picks);
-  const fw = picks['final'];
-  const finalRival = (fw==null) ? null : fc[1-fw];
-  const wa = `https://wa.me/?text=${encodeURIComponent('⚽ Mi bracket Octavos Mundial 2026 ('+name+'):\n'+code)}`;
+  const wa = `https://wa.me/?text=${encodeURIComponent('⚽ Mis picks Octavos Mundial 2026 ('+name+'):\n'+code)}`;
 
   const flagImg = (t, cls) => t && t.f ? `<img class="${cls}" src="https://flagcdn.com/h40/${t.f}.png" alt="">` : '';
 
-  const groups = [
-    ['Octavos de final', ['lr16_1','lr16_2','lr16_3','lr16_4','rr16_1','rr16_2','rr16_3','rr16_4']],
-    ['Cuartos de final', ['lqf_1','lqf_2','rqf_1','rqf_2']],
-    ['Semifinales', ['lsf','rsf']],
-    ['Final y 3er lugar', ['final','third']],
-  ];
-  let sum = '';
-  groups.forEach(([lbl,ids])=>{
-    let rows = '';
-    ids.forEach(id=>{
-      const w = winnerOf(id, picks);
-      const ss = scoreStr(id, picks, scores);
-      const tag = id==='final' ? '🏆' : id==='third' ? '🥉' : MATCHDEF[id].date.split(' · ')[0];
-      rows += `<div class="sum-row">
-        <span class="sr-date">${tag}</span>
-        ${flagImg(w,'sr-flag')}
-        <span class="sr-name">${w?w.n:'—'}</span>
-        <span class="sr-score">${ss||''}</span>
-      </div>`;
-    });
-    sum += `<div class="sum-group"><h3>${lbl}</h3>${rows}</div>`;
+  let sum = '<div class="sum-group"><h3>Octavos de final</h3>';
+  ORDER.forEach(id=>{
+    const w = winnerOf(id, picks);
+    const ss = scoreStr(id, picks, scores);
+    sum += `<div class="sum-row">
+      <span class="sr-date">${MATCHDEF[id].date.split(' · ')[0]}</span>
+      ${flagImg(w,'sr-flag')}
+      <span class="sr-name">${w?w.n:'—'}</span>
+      <span class="sr-score">${ss||''}</span>
+    </div>`;
   });
+  sum += '</div>';
 
   document.getElementById('fillScreen').classList.add('hide');
   document.getElementById('footer').classList.add('hide');
@@ -526,22 +492,10 @@ function showResult(){
 
       <div class="shot" id="shotCard">
         <div class="shot-head">
-          <div class="sh-sub">⚽ Quiniela Octavos · Mundial 2026</div>
+          <div class="sh-sub">⚽ Picks Octavos · Mundial 2026</div>
           <div class="sh-name">${name}</div>
         </div>
-        <div class="champ-banner">
-          ${flagImg(champ,'')}
-          <div>
-            <div class="cb-lbl">🏆 Mi campeón</div>
-            <div class="cb-name">${champ?champ.n:'—'}</div>
-          </div>
-        </div>
         <div class="shot-body">
-          <div class="sum-row" style="border-bottom:none;padding-top:8px">
-            <span class="sr-date">Final</span>
-            <span class="sr-name">${champ?champ.n:'—'} <span style="color:#8c959f;font-weight:500">vs</span> ${finalRival?finalRival.n:'—'}</span>
-            <span class="sr-score">${scoreStr('final',picks,scores)||''}</span>
-          </div>
           ${sum}
         </div>
         <div class="shot-foot">Generado en la app · ${new Date().toLocaleDateString('es')}</div>
@@ -579,8 +533,6 @@ function loadCode(){
   catch(e){ out.innerHTML = `<div style="color:#cf222e;font-size:0.85em">⚠️ ${e.message}</div>`; return; }
   const pk = data.picks;
   const sc = data.scores || {};
-  const champ = winnerOf('final', pk);
-  const third = winnerOf('third', pk);
   let rows = '';
   ORDER.forEach(id=>{
     const cands = candidatesOf(id, pk);
@@ -589,12 +541,10 @@ function loadCode(){
     const g = v => v==null ? '·' : v;
     const nameCell = (i) => {
       const c = cands[i]; if(!c) return '—';
-      const bold = w===i;
-      return `<span style="${bold?'font-weight:800;color:#1f2328':'color:#8c959f'}">${c.n}</span>`;
+      return `<span style="${w===i?'font-weight:800;color:#1f2328':'color:#8c959f'}">${c.n}</span>`;
     };
-    const tag = id==='final'?'🏆 FINAL':id==='third'?'🥉 3er':MATCHDEF[id].date.split(' · ')[0];
     rows += `<div class="sum-row" style="gap:8px">
-      <span class="sr-date" style="flex:0 0 56px;font-size:0.78em">${tag}</span>
+      <span class="sr-date" style="flex:0 0 56px;font-size:0.78em">${MATCHDEF[id].date.split(' · ')[0]}</span>
       <span style="flex:1;text-align:right">${nameCell(0)}</span>
       <span style="flex:0 0 44px;text-align:center;font-weight:700;color:#57606a">${g(s[0])}-${g(s[1])}</span>
       <span style="flex:1">${nameCell(1)}</span>
@@ -602,8 +552,7 @@ function loadCode(){
   });
   out.innerHTML = `
     <div style="background:#ffffff;border:1px solid #d8dee4;border-radius:10px;padding:12px;box-shadow:0 1px 3px rgba(31,35,40,0.06);">
-      <div style="font-weight:800;font-size:1.05em;margin-bottom:4px;">📋 Bracket de ${data.name}</div>
-      <div style="font-size:0.9em;color:#656d76;margin-bottom:10px">Campeón: <b style="color:#9a6700">${champ?champ.n:'—'}</b> · 3er: ${third?third.n:'—'}</div>
+      <div style="font-weight:800;font-size:1.05em;margin-bottom:4px;">📋 Picks de ${data.name}</div>
       ${rows}
     </div>`;
 }
