@@ -1,10 +1,11 @@
 name: Fetch WC2026 scores
 
 on:
-  # Corre cada 5 min, solo en fechas UTC que cubren días con partidos
-  # (tiempo Guatemala UTC-6, así que cada día de partido cubre 2 fechas UTC)
+  # Corre cada 5 min durante julio; scripts/fetch-scores.mjs decide en cada
+  # corrida (usando scripts/match-schedule.json) si hay un partido activo
+  # en ese momento antes de gastar una llamada real al API.
   schedule:
-    - cron: '*/5 * 4,5,6,7,8,9,10,11,12,14,15,16,18,19,20 7 *'
+    - cron: '*/5 * * 7 *'
   workflow_dispatch: {}
 
 permissions:
