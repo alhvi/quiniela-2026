@@ -147,10 +147,9 @@
 </button>
 <div class="lb-panel open" id="lbPanel">
   <div class="lb-tabs">
-    <button class="lb-tab" data-lbtab="r32" onclick="setLbTab('r32')">16avos</button>
-    <button class="lb-tab active" data-lbtab="r16" onclick="setLbTab('r16')">8avos</button>
-    <button class="lb-tab" data-lbtab="octPlus" onclick="setLbTab('octPlus')" style="display:none">Total (sin 16avos)</button>
-    <button class="lb-tab" data-lbtab="total" onclick="setLbTab('total')">Total</button>
+    <button class="lb-tab" data-lbtab="octPlus" onclick="setLbTab('octPlus')">Eliminatorias (sin 16avos)</button>
+    <button class="lb-tab active" data-lbtab="total" onclick="setLbTab('total')">Eliminatorias</button>
+    <button class="lb-tab" data-lbtab="mundial" onclick="setLbTab('mundial')">Mundial</button>
   </div>
   <div class="lb-list" id="lbList"></div>
 </div>
@@ -260,23 +259,24 @@ function flagOf(team, cls){ return team && team.f ? `<img class="${cls}" src="ht
 // r32s: marcadores de 16avos (16 pares)
 // op: picks de octavos (8 chars), null = no enviado
 // os: marcadores de octavos (8 pares)
+// gp: [puntos, marcador exacto, resultado] de la quiniela de grupos (grupos.html), null si no participó
 const RAW = [
-  { name:'Susie',           r32p:'1000000000000000', r32s:[[0,2],[2,0],[3,0],[2,0],[2,0],[1,0],[1,0],[2,1],[2,1],[2,1],[2,0],[2,0],[1,0],[2,0],[2,0],[4,0]], op:'01110011',   os:[[2,1],[0,2],[1,2],[1,2],[1,0],[2,1],[0,1],[0,2]] },
-  { name:'Adrianna',        r32p:'1000000001000010', r32s:[[1,2],[2,1],[3,1],[2,1],[3,1],[1,0],[3,1],[2,1],[2,1],[0,1],[1,0],[2,1],[2,0],[2,1],[0,1],[2,1]], op:'01010111',   os:[[2,1],[1,3],[1,0],[2,3],[2,1],[1,2],[0,2],[0,3]] },
-  { name:'Erick',           r32p:'1000000111100010', r32s:[[0,2],[3,2],[2,1],[3,1],[2,1],[2,1],[2,1],[1,2],[1,2],[1,2],[1,2],[3,1],[2,0],[2,1],[1,2],[3,1]], op:'11100101',   os:[[1,2],[1,3],[1,2],[2,1],[2,1],[1,2],[2,1],[1,3]] },
-  { name:'Juan',            r32p:'1000000000100000', r32s:[[1,2],[1,0],[2,0],[2,0],[1,0],[2,1],[2,0],[1,0],[2,1],[1,0],[1,2],[3,1],[1,0],[1,0],[2,1],[3,1]], op:'11010111',   os:[[1,2],[0,2],[2,1],[1,2],[2,1],[0,2],[1,2],[0,3]] },
-  { name:'Canche',          r32p:'1100000001000000', r32s:[[1,2],[1,2],[2,1],[2,1],[2,1],[2,1],[2,1],[2,1],[2,1],[1,2],[2,1],[2,1],[2,1],[2,1],[2,1],[2,1]], op:'11100111',   os:[[1,2],[1,2],[1,2],[2,1],[2,1],[1,2],[1,2],[1,2]] },
-  { name:'Martín',          r32p:'1000000000100010', r32s:[[1,3],[2,1],[2,0],[3,1],[1,0],[2,1],[3,1],[2,1],[2,1],[1,0],[0,1],[2,1],[2,1],[1,0],[1,2],[3,1]], op:'11010111',   os:[[1,2],[0,2],[2,1],[1,2],[2,1],[0,2],[1,2],[1,3]] },
-  { name:'Alhvi',           r32p:'1100100100100000', r32s:[[1,2],[1,2],[3,2],[3,2],[1,2],[2,1],[3,2],[5,7],[3,2],[2,1],[1,3],[2,0],[2,1],[2,1],[2,1],[3,1]], op:'11100111',   os:[[1,3],[1,2],[1,2],[3,1],[3,2],[2,3],[2,3],[1,2]] },
-  { name:'Mónica',          r32p:'1000000000100010', r32s:[[1,2],[3,2],[3,2],[2,1],[2,1],[2,1],[2,1],[2,1],[2,1],[2,1],[1,2],[2,1],[2,1],[2,1],[1,2],[3,1]], op:'00010010',   os:[[2,1],[3,2],[2,1],[3,4],[3,2],[2,1],[2,3],[3,2]] },
-  { name:'Camila',          r32p:'1100110001101010', r32s:[[0,2],[1,2],[2,0],[3,1],[1,2],[1,2],[2,1],[2,0],[2,0],[1,3],[1,2],[2,1],[1,2],[1,0],[1,2],[4,0]], op:'11111101',   os:[[1,2],[1,3],[1,2],[1,2],[1,2],[1,2],[2,0],[1,3]] },
-  { name:'Ricky',           r32p:'1100100000000110', r32s:[[0,2],[0,1],[3,1],[4,2],[2,3],[2,1],[2,0],[1,0],[2,1],[2,1],[2,1],[3,0],[1,0],[0,1],[0,1],[3,1]], op:'11000111',   os:[[0,2],[1,2],[2,1],[3,1],[3,2],[1,2],[1,2],[2,3]] },
-  { name:'Chichi',          r32p:'1000000001000010', r32s:[[0,2],[2,1],[2,0],[1,0],[3,1],[2,0],[3,2],[3,1],[3,1],[1,2],[2,1],[3,1],[2,0],[2,0],[1,2],[3,1]], op:'11010111',   os:[[1,2],[1,2],[2,1],[1,2],[2,1],[1,2],[1,2],[1,2]] },
-  { name:'Claude',          r32p:'1000000001000010', r32s:[[1,2],[2,1],[2,0],[3,1],[2,1],[2,0],[2,0],[2,1],[3,1],[1,2],[2,1],[3,0],[2,1],[2,0],[0,1],[3,0]], op:'11000111',   os:[[1,2],[0,2],[2,1],[2,1],[3,1],[1,2],[1,2],[0,2]] },
-  { name:'Patricia y Marco',r32p:'',                 r32s:[],                                                                                                 op:'11110111',   os:[[1,3],[1,4],[1,2],[2,3],[2,0],[1,2],[1,2],[1,2]] },
-  { name:'Carol Cajas',     r32p:'',                 r32s:[],                                                                                                 op:'11101111',   os:[[1,2],[0,2],[3,4],[2,1],[1,3],[1,2],[1,2],[1,2]] },
-  { name:'Dianis',          r32p:'',                 r32s:[],                                                                                                 op:'11000101',   os:[[1,2],[1,2],[2,1],[2,1],[2,1],[0,2],[2,1],[1,2]] },
-  { name:'Alvaro',          r32p:'',                 r32s:[],                                                                                                 op:'11110111',   os:[[0,1],[1,2],[0,1],[0,1],[1,0],[1,2],[1,2],[0,3]] },
+  { name:'Susie',           r32p:'1000000000000000', r32s:[[0,2],[2,0],[3,0],[2,0],[2,0],[1,0],[1,0],[2,1],[2,1],[2,1],[2,0],[2,0],[1,0],[2,0],[2,0],[4,0]], op:'01110011',   os:[[2,1],[0,2],[1,2],[1,2],[1,0],[2,1],[0,1],[0,2]], gp:null },
+  { name:'Adrianna',        r32p:'1000000001000010', r32s:[[1,2],[2,1],[3,1],[2,1],[3,1],[1,0],[3,1],[2,1],[2,1],[0,1],[1,0],[2,1],[2,0],[2,1],[0,1],[2,1]], op:'01010111',   os:[[2,1],[1,3],[1,0],[2,3],[2,1],[1,2],[0,2],[0,3]], gp:[37,5,22] },
+  { name:'Erick',           r32p:'1000000111100010', r32s:[[0,2],[3,2],[2,1],[3,1],[2,1],[2,1],[2,1],[1,2],[1,2],[1,2],[1,2],[3,1],[2,0],[2,1],[1,2],[3,1]], op:'11100101',   os:[[1,2],[1,3],[1,2],[2,1],[2,1],[1,2],[2,1],[1,3]], gp:[55,7,34] },
+  { name:'Juan',            r32p:'1000000000100000', r32s:[[1,2],[1,0],[2,0],[2,0],[1,0],[2,1],[2,0],[1,0],[2,1],[1,0],[1,2],[3,1],[1,0],[1,0],[2,1],[3,1]], op:'11010111',   os:[[1,2],[0,2],[2,1],[1,2],[2,1],[0,2],[1,2],[0,3]], gp:[50,6,32] },
+  { name:'Canche',          r32p:'1100000001000000', r32s:[[1,2],[1,2],[2,1],[2,1],[2,1],[2,1],[2,1],[2,1],[2,1],[1,2],[2,1],[2,1],[2,1],[2,1],[2,1],[2,1]], op:'11100111',   os:[[1,2],[1,2],[1,2],[2,1],[2,1],[1,2],[1,2],[1,2]], gp:[43,5,28] },
+  { name:'Martín',          r32p:'1000000000100010', r32s:[[1,3],[2,1],[2,0],[3,1],[1,0],[2,1],[3,1],[2,1],[2,1],[1,0],[0,1],[2,1],[2,1],[1,0],[1,2],[3,1]], op:'11010111',   os:[[1,2],[0,2],[2,1],[1,2],[2,1],[0,2],[1,2],[1,3]], gp:[39,1,36] },
+  { name:'Alhvi',           r32p:'1100100100100000', r32s:[[1,2],[1,2],[3,2],[3,2],[1,2],[2,1],[3,2],[5,7],[3,2],[2,1],[1,3],[2,0],[2,1],[2,1],[2,1],[3,1]], op:'11100111',   os:[[1,3],[1,2],[1,2],[3,1],[3,2],[2,3],[2,3],[1,2]], gp:[44,4,32] },
+  { name:'Mónica',          r32p:'1000000000100010', r32s:[[1,2],[3,2],[3,2],[2,1],[2,1],[2,1],[2,1],[2,1],[2,1],[2,1],[1,2],[2,1],[2,1],[2,1],[1,2],[3,1]], op:'00010010',   os:[[2,1],[3,2],[2,1],[3,4],[3,2],[2,1],[2,3],[3,2]], gp:null },
+  { name:'Camila',          r32p:'1100110001101010', r32s:[[0,2],[1,2],[2,0],[3,1],[1,2],[1,2],[2,1],[2,0],[2,0],[1,3],[1,2],[2,1],[1,2],[1,0],[1,2],[4,0]], op:'11111101',   os:[[1,2],[1,3],[1,2],[1,2],[1,2],[1,2],[2,0],[1,3]], gp:null },
+  { name:'Ricky',           r32p:'1100100000000110', r32s:[[0,2],[0,1],[3,1],[4,2],[2,3],[2,1],[2,0],[1,0],[2,1],[2,1],[2,1],[3,0],[1,0],[0,1],[0,1],[3,1]], op:'11000111',   os:[[0,2],[1,2],[2,1],[3,1],[3,2],[1,2],[1,2],[2,3]], gp:[45,4,33] },
+  { name:'Chichi',          r32p:'1000000001000010', r32s:[[0,2],[2,1],[2,0],[1,0],[3,1],[2,0],[3,2],[3,1],[3,1],[1,2],[2,1],[3,1],[2,0],[2,0],[1,2],[3,1]], op:'11010111',   os:[[1,2],[1,2],[2,1],[1,2],[2,1],[1,2],[1,2],[1,2]], gp:null },
+  { name:'Claude',          r32p:'1000000001000010', r32s:[[1,2],[2,1],[2,0],[3,1],[2,1],[2,0],[2,0],[2,1],[3,1],[1,2],[2,1],[3,0],[2,1],[2,0],[0,1],[3,0]], op:'11000111',   os:[[1,2],[0,2],[2,1],[2,1],[3,1],[1,2],[1,2],[0,2]], gp:[59,8,35] },
+  { name:'Patricia y Marco',r32p:'',                 r32s:[],                                                                                                 op:'11110111',   os:[[1,3],[1,4],[1,2],[2,3],[2,0],[1,2],[1,2],[1,2]], gp:[40,4,28] },
+  { name:'Carol Cajas',     r32p:'',                 r32s:[],                                                                                                 op:'11101111',   os:[[1,2],[0,2],[3,4],[2,1],[1,3],[1,2],[1,2],[1,2]], gp:null },
+  { name:'Dianis',          r32p:'',                 r32s:[],                                                                                                 op:'11000101',   os:[[1,2],[1,2],[2,1],[2,1],[2,1],[0,2],[2,1],[1,2]], gp:null },
+  { name:'Alvaro',          r32p:'',                 r32s:[],                                                                                                 op:'11110111',   os:[[0,1],[1,2],[0,1],[0,1],[1,0],[1,2],[1,2],[0,3]], gp:[40,3,31] },
 ];
 
 // ── Bracket logic ──
@@ -312,7 +312,7 @@ const PARTICIPANTS = RAW.map(p=>{
     OCT_IDS.forEach((id,i) => octsc[id] = p.os[i] || [null,null]);
     octbr = makeBracket(octpObj);
   }
-  return {name:p.name, r32br, r32sc, octbr, octsc};
+  return {name:p.name, r32br, r32sc, octbr, octsc, gp:p.gp};
 });
 
 // ════════════ ESTADO REAL (API) ════════════
@@ -394,7 +394,7 @@ async function fetchScores(){
 }
 
 // ════════════ SCORING ════════════
-let lbTab = 'r16';
+let lbTab = 'total';
 
 function setLbTab(tab){
   lbTab = tab;
@@ -442,12 +442,16 @@ function getTotals(){
     const octPlusPts = byRound.r16 + byRound.qf + byRound.sf + byRound.fin;
     const sumOf = obj => obj.r16+obj.qf+obj.sf+obj.fin;
     const champ = p.octbr ? p.octbr.win['final'] : null;
+    const totalPts = r32pts+octPlusPts;
+    const totalExact = exactBy.r32+sumOf(exactBy), totalResult = resultBy.r32+sumOf(resultBy);
+    const [gPts, gExact, gResult] = p.gp || [0,0,0];
     return {
-      pts: r32pts+octPlusPts, r32pts, r16pts, octPlusPts, champ,
+      pts: totalPts, r32pts, r16pts, octPlusPts, champ,
       r32Exact: exactBy.r32, r32Result: resultBy.r32,
       r16Exact: exactBy.r16, r16Result: resultBy.r16,
       octPlusExact: sumOf(exactBy), octPlusResult: sumOf(resultBy),
-      exact: exactBy.r32+sumOf(exactBy), result: resultBy.r32+sumOf(resultBy),
+      exact: totalExact, result: totalResult,
+      mundialPts: totalPts+gPts, mundialExact: totalExact+gExact, mundialResult: totalResult+gResult,
     };
   });
 }
@@ -461,9 +465,9 @@ function toggleLb(){
 function renderLb(){
   const totals = getTotals();
 
-  const scoreOf = t => lbTab==='r32' ? t.r32pts : lbTab==='r16' ? t.r16pts : lbTab==='octPlus' ? t.octPlusPts : t.pts;
-  const exactOf = t => lbTab==='r32' ? t.r32Exact : lbTab==='r16' ? t.r16Exact : lbTab==='octPlus' ? t.octPlusExact : t.exact;
-  const resultOf = t => lbTab==='r32' ? t.r32Result : lbTab==='r16' ? t.r16Result : lbTab==='octPlus' ? t.octPlusResult : t.result;
+  const scoreOf = t => lbTab==='octPlus' ? t.octPlusPts : lbTab==='mundial' ? t.mundialPts : t.pts;
+  const exactOf = t => lbTab==='octPlus' ? t.octPlusExact : lbTab==='mundial' ? t.mundialExact : t.exact;
+  const resultOf = t => lbTab==='octPlus' ? t.octPlusResult : lbTab==='mundial' ? t.mundialResult : t.result;
   const ranked = PARTICIPANTS.map((p,i)=>({name:p.name, hasOct:!!p.octbr, ...totals[i]}))
     .sort((a,b)=> scoreOf(b)-scoreOf(a) || exactOf(b)-exactOf(a) || a.name.localeCompare(b.name));
 
@@ -641,7 +645,7 @@ buildUI();
     if(saved.view && saved.view!=='fecha') showView(saved.view);
     if(saved.fechaTab) switchTab(saved.fechaTab, 'fecha-tabs', 'fecha-panels');
     if(saved.rondaTab) switchTab(saved.rondaTab, 'ronda-tabs', 'ronda-panels');
-    if(saved.lbTab && saved.lbTab!=='octPlus') setLbTab(saved.lbTab);
+    if(saved.lbTab) setLbTab(saved.lbTab);
   } else {
     const now = new Date();
     const dk = (now.getMonth()+1)*100 + now.getDate();
