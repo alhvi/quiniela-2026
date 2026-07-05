@@ -1,5 +1,5 @@
 {
-  "fetchedAt": "2026-07-05T21:55:26.967Z",
+  "fetchedAt": "2026-07-05T22:03:43.435Z",
   "data": [
     {
       "id": 2,
@@ -2269,7 +2269,7 @@
       "stadium_city": "East Rutherford, NJ",
       "stadium_country": "USA",
       "kickoff_utc": "2026-07-05T20:00:00.000Z",
-      "home_score": 0,
+      "home_score": 1,
       "away_score": 2,
       "home_pen": null,
       "away_pen": null,
