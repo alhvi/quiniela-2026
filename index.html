@@ -147,8 +147,8 @@
 </button>
 <div class="lb-panel open" id="lbPanel">
   <div class="lb-tabs">
-    <button class="lb-tab" data-lbtab="octPlus" onclick="setLbTab('octPlus')">Eliminatorias (sin 16avos)</button>
-    <button class="lb-tab active" data-lbtab="total" onclick="setLbTab('total')">Eliminatorias</button>
+    <button class="lb-tab active" data-lbtab="octPlus" onclick="setLbTab('octPlus')">Eliminatorias (sin 16avos)</button>
+    <button class="lb-tab" data-lbtab="total" onclick="setLbTab('total')">Eliminatorias</button>
     <button class="lb-tab" data-lbtab="mundial" onclick="setLbTab('mundial')">Mundial</button>
   </div>
   <div class="lb-list" id="lbList"></div>
@@ -394,7 +394,7 @@ async function fetchScores(){
 }
 
 // ════════════ SCORING ════════════
-let lbTab = 'total';
+let lbTab = 'octPlus';
 
 function setLbTab(tab){
   lbTab = tab;
