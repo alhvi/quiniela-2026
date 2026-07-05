@@ -631,7 +631,7 @@ function saveTabState(){
   const v = document.querySelector('.view-btn.active');
   const f = document.querySelector('#fecha-tabs .tab.active');
   const r = document.querySelector('#ronda-tabs .tab.active');
-  sessionStorage.setItem('q2026_oct_tab', JSON.stringify({
+  sessionStorage.setItem('q2026_oct_tab_v2', JSON.stringify({
     view: v?.dataset.view ?? 'fecha', fechaTab: f?.dataset.tab ?? null, rondaTab: r?.dataset.tab ?? null,
     lbTab,
   }));
@@ -640,7 +640,7 @@ function saveTabState(){
 // ════════════ INIT ════════════
 buildUI();
 (function(){
-  const saved = JSON.parse(sessionStorage.getItem('q2026_oct_tab') || 'null');
+  const saved = JSON.parse(sessionStorage.getItem('q2026_oct_tab_v2') || 'null');
   if(saved){
     if(saved.view && saved.view!=='fecha') showView(saved.view);
     if(saved.fechaTab) switchTab(saved.fechaTab, 'fecha-tabs', 'fecha-panels');
