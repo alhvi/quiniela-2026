@@ -1,5 +1,5 @@
 {
-  "fetchedAt": "2026-07-05T22:03:43.435Z",
+  "fetchedAt": "2026-07-05T22:16:57.013Z",
   "data": [
     {
       "id": 2,
@@ -2273,8 +2273,8 @@
       "away_score": 2,
       "home_pen": null,
       "away_pen": null,
-      "status": "live",
-      "phase": "2H"
+      "status": "completed",
+      "phase": "FT"
     },
     {
       "id": 99,
@@ -2456,9 +2456,9 @@
       "match_number": 99,
       "round": "QF",
       "group_name": null,
-      "home_team_id": null,
-      "home_team": null,
-      "home_team_code": null,
+      "home_team_id": 35,
+      "home_team": "Norway",
+      "home_team_code": "NOR",
       "home_team_flag": null,
       "away_team_id": null,
       "away_team": null,
