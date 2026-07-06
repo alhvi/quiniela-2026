@@ -1,5 +1,5 @@
 {
-  "fetchedAt": "2026-07-06T20:05:18.808Z",
+  "fetchedAt": "2026-07-06T20:10:44.668Z",
   "data": [
     {
       "id": 2,
@@ -2324,7 +2324,7 @@
       "home_pen": null,
       "away_pen": null,
       "status": "live",
-      "phase": "HT"
+      "phase": "2H"
     },
     {
       "id": 87,
