@@ -1,5 +1,5 @@
 {
-  "fetchedAt": "2026-07-06T18:55:16.559Z",
+  "fetchedAt": "2026-07-06T19:00:47.388Z",
   "data": [
     {
       "id": 2,
@@ -2319,12 +2319,12 @@
       "stadium_city": "Arlington, TX",
       "stadium_country": "USA",
       "kickoff_utc": "2026-07-06T19:00:00.000Z",
-      "home_score": null,
-      "away_score": null,
+      "home_score": 0,
+      "away_score": 0,
       "home_pen": null,
       "away_pen": null,
-      "status": "scheduled",
-      "phase": "PRE"
+      "status": "live",
+      "phase": "1H"
     },
     {
       "id": 87,
