@@ -1,5 +1,5 @@
 {
-  "fetchedAt": "2026-07-06T20:50:40.357Z",
+  "fetchedAt": "2026-07-06T20:55:16.399Z",
   "data": [
     {
       "id": 2,
@@ -2320,7 +2320,7 @@
       "stadium_country": "USA",
       "kickoff_utc": "2026-07-06T19:00:00.000Z",
       "home_score": 0,
-      "away_score": 0,
+      "away_score": 1,
       "home_pen": null,
       "away_pen": null,
       "status": "live",
