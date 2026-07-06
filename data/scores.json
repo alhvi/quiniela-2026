@@ -1,5 +1,5 @@
 {
-  "fetchedAt": "2026-07-06T21:05:18.044Z",
+  "fetchedAt": "2026-07-06T21:10:40.884Z",
   "data": [
     {
       "id": 2,
@@ -2431,9 +2431,9 @@
       "match_number": 98,
       "round": "QF",
       "group_name": null,
-      "home_team_id": null,
-      "home_team": null,
-      "home_team_code": null,
+      "home_team_id": 30,
+      "home_team": "Spain",
+      "home_team_code": "ESP",
       "home_team_flag": null,
       "away_team_id": null,
       "away_team": null,
