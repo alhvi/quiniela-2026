@@ -1,5 +1,5 @@
 {
-  "fetchedAt": "2026-07-06T02:30:39.647Z",
+  "fetchedAt": "2026-07-06T02:35:14.234Z",
   "data": [
     {
       "id": 2,
@@ -2294,7 +2294,7 @@
       "stadium_city": "Mexico City",
       "stadium_country": "Mexico",
       "kickoff_utc": "2026-07-06T00:00:00.000Z",
-      "home_score": 1,
+      "home_score": 2,
       "away_score": 3,
       "home_pen": null,
       "away_pen": null,
