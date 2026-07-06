@@ -1,5 +1,5 @@
 {
-  "fetchedAt": "2026-07-06T21:00:44.779Z",
+  "fetchedAt": "2026-07-06T21:05:18.044Z",
   "data": [
     {
       "id": 2,
@@ -2323,8 +2323,8 @@
       "away_score": 1,
       "home_pen": null,
       "away_pen": null,
-      "status": "live",
-      "phase": "2H"
+      "status": "completed",
+      "phase": "FT"
     },
     {
       "id": 87,
