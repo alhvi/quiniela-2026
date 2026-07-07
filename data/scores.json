@@ -1,5 +1,5 @@
 {
-  "fetchedAt": "2026-07-07T17:45:17.361Z",
+  "fetchedAt": "2026-07-07T17:50:42.462Z",
   "data": [
     {
       "id": 2,
@@ -2369,7 +2369,7 @@
       "stadium_city": "Atlanta, GA",
       "stadium_country": "USA",
       "kickoff_utc": "2026-07-07T16:00:00.000Z",
-      "home_score": 1,
+      "home_score": 2,
       "away_score": 2,
       "home_pen": null,
       "away_pen": null,
