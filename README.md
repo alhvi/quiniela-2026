@@ -57,7 +57,7 @@ El objeto `EN_TO_ES` en `index.html` cubre los 32 equipos del bracket (los defin
 
 ## Notas técnicas
 
-- Los resultados se obtienen por un GitHub Action programado (`.github/workflows/fetch-scores.yml`) que corre cada 5 min durante julio, pero el script (`scripts/fetch-scores.mjs`) solo llama al API real si el horario actual cae dentro de la ventana de algún partido (según `scripts/match-schedule.json`, ±30min/3h por kickoff). Fuera de esas ventanas no gasta llamadas. El resultado se guarda en `data/scores.json` (commit automático) y el front-end solo lee ese JSON estático — nunca llama al API externo directamente, así el consumo no depende de cuánta gente visite la página.
+- Los resultados se obtienen por un GitHub Action programado (`.github/workflows/fetch-scores.yml`) que corre cada 5 min durante julio, pero el script (`scripts/fetch-scores.mjs`) solo llama al API real si el horario actual cae dentro de la ventana de algún partido (según `scripts/match-schedule.json`, ±30min/3.5h por kickoff). Fuera de esas ventanas no gasta llamadas. El resultado se guarda en `data/scores.json` (commit automático) y el front-end solo lee ese JSON estático — nunca llama al API externo directamente, así el consumo no depende de cuánta gente visite la página.
 - Horarios en tiempo de Guatemala (UTC-6), hardcodeados desde la API
 - Partidos ordenados por hora dentro de cada fecha
 - Banderas vía `flagcdn.com/h40/{iso-code}.png`

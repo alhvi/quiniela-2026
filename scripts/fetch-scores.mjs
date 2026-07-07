@@ -6,7 +6,7 @@ const API_KEY = process.env.FOOTBALL_DATA_API_KEY;
 // Guatemala = UTC-6 fijo (sin horario de verano)
 const GT_TO_UTC_MS = 6 * 60 * 60 * 1000;
 const WINDOW_BEFORE_MS = 30 * 60 * 1000;   // 30 min antes del kickoff
-const WINDOW_AFTER_MS = 3 * 60 * 60 * 1000; // 3 horas después (tiempo extra/penales/reporte)
+const WINDOW_AFTER_MS = 3.5 * 60 * 60 * 1000; // 3.5 horas después (tiempo extra/penales/margen de reporte del proveedor)
 
 function isMatchWindowActive(schedule, nowMs) {
   return schedule.some(({ date, time }) => {
