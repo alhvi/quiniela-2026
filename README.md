@@ -31,41 +31,29 @@ Seguimiento de quinielas para la fase de grupos del Mundial 2026 (72 partidos, 1
 
 ## API de resultados en vivo
 
-**Proveedor:** wc2026api.com  
-**Base URL:** `https://api.wc2026api.com`  
-**Auth header:** `Authorization: Bearer <WC2026_API_KEY>`  
-**Key:** guardada como secret de GitHub Actions (`WC2026_API_KEY`), nunca en el código fuente.
+**Proveedor:** football-data.org (plan free, gratis para siempre)  
+**Base URL:** `https://api.football-data.org/v4`  
+**Auth header:** `X-Auth-Token: <FOOTBALL_DATA_API_KEY>`  
+**Key:** guardada como secret de GitHub Actions (`FOOTBALL_DATA_API_KEY`), nunca en el código fuente.  
+**Límite:** 10 llamadas/minuto (mucho más holgado que el proveedor anterior, que tenía 100/día y se agotó — ver historial de commits).
 
-### Endpoints
+> Proveedor anterior (`wc2026api.com`) descontinuado el 2026-07-07: la key de prueba se desactivó al superar su cuota de 100 llamadas/día, causada por correr el cron nativo de GitHub y el cron externo en paralelo.
+
+### Endpoint
 
 ```
-GET /matches      → lista de todos los partidos con scores y status
-GET /test/match   → partido ficticio para dev (cicla por todas las fases en tiempo real)
+GET /competitions/WC/matches   → todos los partidos del Mundial con scores y status
 ```
 
-### Estructura de respuesta confirmada
+`scripts/fetch-scores.mjs` normaliza la respuesta anidada de football-data.org (`homeTeam.name`, `score.fullTime.{home,away}`, `score.winner` como `HOME_TEAM`/`AWAY_TEAM`/`DRAW`, etc.) al mismo shape plano que ya consumía `applyScores()` en `index.html` (`home_team`, `away_team`, `home_score`, `away_score`, `home_pen`, `away_pen`, `status`, `winner` como nombre de equipo), así el front-end no tuvo que cambiar.
 
-```json
-[
-  {
-    "match_number": 1,
-    "round": "group",
-    "group_name": "A",
-    "home_team": "Mexico",
-    "away_team": "South Africa",
-    "kickoff_utc": "2026-06-11T19:00:00Z",
-    "status": "scheduled",
-    "home_score": null,
-    "away_score": null
-  }
-]
-```
+**Valores de `status` de football-data.org:** `SCHEDULED`, `TIMED`, `IN_PLAY`, `PAUSED`, `FINISHED`, `SUSPENDED`, `POSTPONED`, `CANCELLED`, `AWARDED` (el front-end los usa en minúsculas).
 
-**Valores de `status` confirmados:** `scheduled` · pendiente confirmar `in_progress` / `finished` en vivo (11 jun)
+**Nota sobre penales:** cuando `score.duration` es `PENALTY_SHOOTOUT`, el campo `score.fullTime` de football-data.org ya viene con los goles de penales sumados (`regularTime + extraTime + penalties`). `fetch-scores.mjs` resta `score.penalties` de `fullTime` antes de guardar `home_score`/`away_score`, para no duplicar los penales al sumarlos de nuevo en `applyScores()`.
 
 ### Mapeo de nombres (inglés API → español)
 
-El objeto `EN_TO_ES` en `index.html` cubre todos los equipos verificados contra la API. Nombres no estándar ya mapeados: `Korea Republic`, `Bosnia-Herzegovina`, `IR Iran`.
+El objeto `EN_TO_ES` en `index.html` cubre los 32 equipos del bracket (los definidos en `MATCHDEF`), verificados contra una respuesta real de football-data.org el 2026-07-07. Único alias que football-data.org usa distinto al proveedor anterior: `Cape Verde Islands` (campo `name`) en vez de `Cape Verde`, ya agregado al mapeo.
 
 ## Notas técnicas
 

@@ -28,7 +28,7 @@ jobs:
 
       - name: Fetch scores from API
         env:
-          WC2026_API_KEY: ${{ secrets.WC2026_API_KEY }}
+          FOOTBALL_DATA_API_KEY: ${{ secrets.FOOTBALL_DATA_API_KEY }}
         run: node scripts/fetch-scores.mjs
 
       - name: Commit if changed

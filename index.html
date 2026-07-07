@@ -329,7 +329,7 @@ const EN_TO_ES = {
   "Côte d'Ivoire":'Costa de Marfil','Norway':'Noruega','Mexico':'México','Ecuador':'Ecuador',
   'England':'Inglaterra','DR Congo':'RD Congo','Congo DR':'RD Congo','Democratic Republic of the Congo':'RD Congo',
   'Switzerland':'Suiza','Algeria':'Argelia','Colombia':'Colombia','Ghana':'Ghana','Australia':'Australia',
-  'Egypt':'Egipto','Argentina':'Argentina','Cape Verde':'Cabo Verde',
+  'Egypt':'Egipto','Argentina':'Argentina','Cape Verde':'Cabo Verde','Cape Verde Islands':'Cabo Verde',
 };
 function resolveTeam(n){ return EN_TO_ES[n] || n; }
 const sameSet = (a,b)=> a[0]&&a[1]&&b[0]&&b[1] && ((a[0].n===b[0].n&&a[1].n===b[1].n)||(a[0].n===b[1].n&&a[1].n===b[0].n));
@@ -506,7 +506,7 @@ function realScoreRow(id){
   }
   const real = apiReal[id];
   const has = real && real.h!=null;
-  const isLive = real && (real.status==='in_progress'||real.status==='live');
+  const isLive = real && (real.status==='in_progress'||real.status==='live'||real.status==='in_play'||real.status==='paused');
   const sc = isLive ? 'live-score' : (has ? 'has-score' : '');
   const penTag = (has && real.pen) ? `<div style="text-align:center;font-size:0.72em;color:#8b949e;margin-top:2px;letter-spacing:0.5px;">penales</div>` : '';
   return `<div class="card-teams">
@@ -549,7 +549,7 @@ function buildPreds(id){
 
 function buildCard(id){
   const isR32 = R32_IDS.includes(id);
-  const isLive = apiReal[id] && (apiReal[id].status==='in_progress'||apiReal[id].status==='live');
+  const isLive = apiReal[id] && (apiReal[id].status==='in_progress'||apiReal[id].status==='live'||apiReal[id].status==='in_play'||apiReal[id].status==='paused');
   const isFinished = apiReal[id] && (apiReal[id].status==='finished'||apiReal[id].status==='completed'||apiReal[id].status==='ft');
   let badge = '';
   if(isLive) badge = `<span class="status-badge live">🔴 EN VIVO</span>`;
