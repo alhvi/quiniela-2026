@@ -1,11 +1,12 @@
 name: Fetch WC2026 scores
 
 on:
-  # Corre cada 5 min durante julio; scripts/fetch-scores.mjs decide en cada
-  # corrida (usando scripts/match-schedule.json) si hay un partido activo
-  # en ese momento antes de gastar una llamada real al API.
-  schedule:
-    - cron: '*/5 * * 7 *'
+  # Disparado por un cron externo (cron-job.org) vía workflow_dispatch.
+  # El schedule nativo de GitHub se quitó: duplicaba llamadas al API junto
+  # con el cron externo, lo cual agotó la cuota diaria de la key anterior.
+  # scripts/fetch-scores.mjs decide en cada corrida (usando
+  # scripts/match-schedule.json) si hay un partido activo antes de gastar
+  # una llamada real al API.
   workflow_dispatch: {}
 
 permissions:
