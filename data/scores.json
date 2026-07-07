@@ -1,5 +1,5 @@
 {
-  "fetchedAt": "2026-07-07T20:00:48.481Z",
+  "fetchedAt": "2026-07-07T20:05:15.593Z",
   "data": [
     {
       "id": 2,
@@ -2394,12 +2394,12 @@
       "stadium_city": "Vancouver, BC",
       "stadium_country": "Canada",
       "kickoff_utc": "2026-07-07T20:00:00.000Z",
-      "home_score": null,
-      "away_score": null,
+      "home_score": 0,
+      "away_score": 0,
       "home_pen": null,
       "away_pen": null,
-      "status": "scheduled",
-      "phase": "PRE"
+      "status": "live",
+      "phase": "1H"
     },
     {
       "id": 92,
