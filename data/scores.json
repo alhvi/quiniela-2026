@@ -1,5 +1,5 @@
 {
-  "fetchedAt": "2026-07-07T23:25:16.405Z",
+  "fetchedAt": "2026-07-09T19:30:40.156Z",
   "data": [
     {
       "home_team": "Mexico",
@@ -954,12 +954,12 @@
     {
       "home_team": "Switzerland",
       "away_team": "Colombia",
-      "home_score": 1,
+      "home_score": 0,
       "away_score": 0,
-      "home_pen": 3,
+      "home_pen": 4,
       "away_pen": 3,
       "status": "FINISHED",
-      "winner": null
+      "winner": "Switzerland"
     },
     {
       "home_team": "France",
@@ -992,8 +992,8 @@
       "winner": null
     },
     {
-      "home_team": null,
-      "away_team": null,
+      "home_team": "Argentina",
+      "away_team": "Switzerland",
       "home_score": null,
       "away_score": null,
       "home_pen": null,
