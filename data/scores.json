@@ -1,5 +1,5 @@
 {
-  "fetchedAt": "2026-07-11T23:05:16.659Z",
+  "fetchedAt": "2026-07-11T23:10:42.534Z",
   "data": [
     {
       "home_team": "Mexico",
@@ -984,12 +984,12 @@
     {
       "home_team": "Norway",
       "away_team": "England",
-      "home_score": 2,
+      "home_score": 1,
       "away_score": 1,
       "home_pen": null,
       "away_pen": null,
-      "status": "IN_PLAY",
-      "winner": "Norway"
+      "status": "PAUSED",
+      "winner": null
     },
     {
       "home_team": "Argentina",
