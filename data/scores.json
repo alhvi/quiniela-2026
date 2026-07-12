@@ -1,5 +1,5 @@
 {
-  "fetchedAt": "2026-07-12T01:05:14.832Z",
+  "fetchedAt": "2026-07-12T01:10:39.110Z",
   "data": [
     {
       "home_team": "Mexico",
@@ -994,11 +994,11 @@
     {
       "home_team": "Argentina",
       "away_team": "Switzerland",
-      "home_score": null,
-      "away_score": null,
+      "home_score": 0,
+      "away_score": 0,
       "home_pen": null,
       "away_pen": null,
-      "status": "TIMED",
+      "status": "IN_PLAY",
       "winner": null
     },
     {
