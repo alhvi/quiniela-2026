@@ -1,5 +1,5 @@
 {
-  "fetchedAt": "2026-07-14T20:20:44.261Z",
+  "fetchedAt": "2026-07-14T20:25:15.862Z",
   "data": [
     {
       "home_team": "Mexico",
@@ -1005,7 +1005,7 @@
       "home_team": "France",
       "away_team": "Spain",
       "home_score": 0,
-      "away_score": 1,
+      "away_score": 2,
       "home_pen": null,
       "away_pen": null,
       "status": "IN_PLAY",
