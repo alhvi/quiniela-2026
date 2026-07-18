@@ -116,7 +116,7 @@
 <div class="api-bar">
   <div class="api-dot loading" id="apiDot"></div>
   <span id="apiStatus">Conectando con resultados en vivo…</span>
-  <button class="lb-claude-btn active" id="claudeToggleBtn" onclick="toggleClaude()">🤖 Incluir a Claude</button>
+  <button class="lb-claude-btn" id="claudeToggleBtn" onclick="toggleClaude()">🤖 Incluir a Claude</button>
 </div>
 
 <button class="lb-toggle open" id="lbToggle" onclick="toggleLb()">
@@ -546,7 +546,7 @@ function toggleLb(){
   document.getElementById('lbPanel').classList.toggle('open');
 }
 
-let includeClaude = true;
+let includeClaude = false;
 function toggleClaude(){
   includeClaude = !includeClaude;
   document.getElementById('claudeToggleBtn').classList.toggle('active', includeClaude);
@@ -742,9 +742,9 @@ buildUI();
     if(saved.fechaTab) switchTab(saved.fechaTab, 'fecha-tabs', 'fecha-panels');
     if(saved.rondaTab) switchTab(saved.rondaTab, 'ronda-tabs', 'ronda-panels');
     if(saved.lbTab) setLbTab(saved.lbTab);
-    if(saved.includeClaude === false){
-      includeClaude = false;
-      document.getElementById('claudeToggleBtn').classList.remove('active');
+    if(saved.includeClaude === true){
+      includeClaude = true;
+      document.getElementById('claudeToggleBtn').classList.add('active');
     }
   } else {
     const now = new Date();
