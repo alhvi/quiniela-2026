@@ -151,6 +151,79 @@
 // ════════════ DATA ════════════
 const T = (n, f) => ({ n, f });
 const MATCHDEF = {
+  // ── Fase de grupos (histórico) ──
+  g1:{base:true,teams:[T('México','mx'),T('Sudáfrica','za')],date:'Jue 11 Jun · 1:00 PM'},
+  g2:{base:true,teams:[T('Corea del Sur','kr'),T('Chequia','cz')],date:'Jue 11 Jun · 8:00 PM'},
+  g3:{base:true,teams:[T('Chequia','cz'),T('Sudáfrica','za')],date:'Jue 18 Jun · 10:00 AM'},
+  g4:{base:true,teams:[T('México','mx'),T('Corea del Sur','kr')],date:'Jue 18 Jun · 7:00 PM'},
+  g5:{base:true,teams:[T('Chequia','cz'),T('México','mx')],date:'Mié 24 Jun · 7:00 PM'},
+  g6:{base:true,teams:[T('Sudáfrica','za'),T('Corea del Sur','kr')],date:'Mié 24 Jun · 7:00 PM'},
+  g7:{base:true,teams:[T('Canadá','ca'),T('Bosnia y H.','ba')],date:'Vie 12 Jun · 1:00 PM'},
+  g8:{base:true,teams:[T('Qatar','qa'),T('Suiza','ch')],date:'Sáb 13 Jun · 1:00 PM'},
+  g9:{base:true,teams:[T('Suiza','ch'),T('Bosnia y H.','ba')],date:'Jue 18 Jun · 1:00 PM'},
+  g10:{base:true,teams:[T('Canadá','ca'),T('Qatar','qa')],date:'Jue 18 Jun · 4:00 PM'},
+  g11:{base:true,teams:[T('Suiza','ch'),T('Canadá','ca')],date:'Mié 24 Jun · 1:00 PM'},
+  g12:{base:true,teams:[T('Bosnia y H.','ba'),T('Qatar','qa')],date:'Mié 24 Jun · 1:00 PM'},
+  g13:{base:true,teams:[T('Brasil','br'),T('Marruecos','ma')],date:'Sáb 13 Jun · 4:00 PM'},
+  g14:{base:true,teams:[T('Haití','ht'),T('Escocia','gb-sct')],date:'Sáb 13 Jun · 7:00 PM'},
+  g15:{base:true,teams:[T('Escocia','gb-sct'),T('Marruecos','ma')],date:'Vie 19 Jun · 4:00 PM'},
+  g16:{base:true,teams:[T('Brasil','br'),T('Haití','ht')],date:'Vie 19 Jun · 7:00 PM'},
+  g17:{base:true,teams:[T('Escocia','gb-sct'),T('Brasil','br')],date:'Mié 24 Jun · 4:00 PM'},
+  g18:{base:true,teams:[T('Marruecos','ma'),T('Haití','ht')],date:'Mié 24 Jun · 4:00 PM'},
+  g19:{base:true,teams:[T('EE.UU.','us'),T('Paraguay','py')],date:'Vie 12 Jun · 7:00 PM'},
+  g20:{base:true,teams:[T('Australia','au'),T('Turquía','tr')],date:'Sáb 13 Jun · 10:00 PM'},
+  g21:{base:true,teams:[T('EE.UU.','us'),T('Australia','au')],date:'Vie 19 Jun · 1:00 PM'},
+  g22:{base:true,teams:[T('Turquía','tr'),T('Paraguay','py')],date:'Vie 19 Jun · 10:00 PM'},
+  g23:{base:true,teams:[T('Turquía','tr'),T('EE.UU.','us')],date:'Jue 25 Jun · 8:00 PM'},
+  g24:{base:true,teams:[T('Paraguay','py'),T('Australia','au')],date:'Jue 25 Jun · 8:00 PM'},
+  g25:{base:true,teams:[T('Alemania','de'),T('Curazao','cw')],date:'Dom 14 Jun · 11:00 AM'},
+  g26:{base:true,teams:[T('Costa de Marfil','ci'),T('Ecuador','ec')],date:'Dom 14 Jun · 5:00 PM'},
+  g27:{base:true,teams:[T('Alemania','de'),T('Costa de Marfil','ci')],date:'Sáb 20 Jun · 2:00 PM'},
+  g28:{base:true,teams:[T('Ecuador','ec'),T('Curazao','cw')],date:'Sáb 20 Jun · 6:00 PM'},
+  g29:{base:true,teams:[T('Ecuador','ec'),T('Alemania','de')],date:'Jue 25 Jun · 2:00 PM'},
+  g30:{base:true,teams:[T('Curazao','cw'),T('Costa de Marfil','ci')],date:'Jue 25 Jun · 2:00 PM'},
+  g31:{base:true,teams:[T('Países Bajos','nl'),T('Japón','jp')],date:'Dom 14 Jun · 2:00 PM'},
+  g32:{base:true,teams:[T('Suecia','se'),T('Túnez','tn')],date:'Dom 14 Jun · 8:00 PM'},
+  g33:{base:true,teams:[T('Países Bajos','nl'),T('Suecia','se')],date:'Sáb 20 Jun · 11:00 AM'},
+  g34:{base:true,teams:[T('Túnez','tn'),T('Japón','jp')],date:'Sáb 20 Jun · 10:00 PM'},
+  g35:{base:true,teams:[T('Japón','jp'),T('Suecia','se')],date:'Jue 25 Jun · 5:00 PM'},
+  g36:{base:true,teams:[T('Túnez','tn'),T('Países Bajos','nl')],date:'Jue 25 Jun · 5:00 PM'},
+  g37:{base:true,teams:[T('Bélgica','be'),T('Egipto','eg')],date:'Lun 15 Jun · 1:00 PM'},
+  g38:{base:true,teams:[T('Irán','ir'),T('Nueva Zelanda','nz')],date:'Lun 15 Jun · 7:00 PM'},
+  g39:{base:true,teams:[T('Bélgica','be'),T('Irán','ir')],date:'Dom 21 Jun · 1:00 PM'},
+  g40:{base:true,teams:[T('Nueva Zelanda','nz'),T('Egipto','eg')],date:'Dom 21 Jun · 7:00 PM'},
+  g41:{base:true,teams:[T('Nueva Zelanda','nz'),T('Bélgica','be')],date:'Vie 26 Jun · 9:00 PM'},
+  g42:{base:true,teams:[T('Egipto','eg'),T('Irán','ir')],date:'Vie 26 Jun · 9:00 PM'},
+  g43:{base:true,teams:[T('España','es'),T('Cabo Verde','cv')],date:'Lun 15 Jun · 10:00 AM'},
+  g44:{base:true,teams:[T('Arabia Saudita','sa'),T('Uruguay','uy')],date:'Lun 15 Jun · 4:00 PM'},
+  g45:{base:true,teams:[T('España','es'),T('Arabia Saudita','sa')],date:'Dom 21 Jun · 10:00 AM'},
+  g46:{base:true,teams:[T('Uruguay','uy'),T('Cabo Verde','cv')],date:'Dom 21 Jun · 4:00 PM'},
+  g47:{base:true,teams:[T('Uruguay','uy'),T('España','es')],date:'Vie 26 Jun · 6:00 PM'},
+  g48:{base:true,teams:[T('Cabo Verde','cv'),T('Arabia Saudita','sa')],date:'Vie 26 Jun · 6:00 PM'},
+  g49:{base:true,teams:[T('Francia','fr'),T('Senegal','sn')],date:'Mar 16 Jun · 1:00 PM'},
+  g50:{base:true,teams:[T('Irak','iq'),T('Noruega','no')],date:'Mar 16 Jun · 4:00 PM'},
+  g51:{base:true,teams:[T('Francia','fr'),T('Irak','iq')],date:'Lun 22 Jun · 3:00 PM'},
+  g52:{base:true,teams:[T('Noruega','no'),T('Senegal','sn')],date:'Lun 22 Jun · 6:00 PM'},
+  g53:{base:true,teams:[T('Noruega','no'),T('Francia','fr')],date:'Vie 26 Jun · 1:00 PM'},
+  g54:{base:true,teams:[T('Senegal','sn'),T('Irak','iq')],date:'Vie 26 Jun · 1:00 PM'},
+  g55:{base:true,teams:[T('Argentina','ar'),T('Argelia','dz')],date:'Mar 16 Jun · 7:00 PM'},
+  g56:{base:true,teams:[T('Austria','at'),T('Jordania','jo')],date:'Mar 16 Jun · 10:00 PM'},
+  g57:{base:true,teams:[T('Argentina','ar'),T('Austria','at')],date:'Lun 22 Jun · 11:00 AM'},
+  g58:{base:true,teams:[T('Jordania','jo'),T('Argelia','dz')],date:'Lun 22 Jun · 9:00 PM'},
+  g59:{base:true,teams:[T('Jordania','jo'),T('Argentina','ar')],date:'Sáb 27 Jun · 8:00 PM'},
+  g60:{base:true,teams:[T('Argelia','dz'),T('Austria','at')],date:'Sáb 27 Jun · 8:00 PM'},
+  g61:{base:true,teams:[T('Portugal','pt'),T('RD Congo','cd')],date:'Mié 17 Jun · 11:00 AM'},
+  g62:{base:true,teams:[T('Uzbekistán','uz'),T('Colombia','co')],date:'Mié 17 Jun · 8:00 PM'},
+  g63:{base:true,teams:[T('Portugal','pt'),T('Uzbekistán','uz')],date:'Mar 23 Jun · 11:00 AM'},
+  g64:{base:true,teams:[T('Colombia','co'),T('RD Congo','cd')],date:'Mar 23 Jun · 8:00 PM'},
+  g65:{base:true,teams:[T('Colombia','co'),T('Portugal','pt')],date:'Sáb 27 Jun · 5:30 PM'},
+  g66:{base:true,teams:[T('RD Congo','cd'),T('Uzbekistán','uz')],date:'Sáb 27 Jun · 5:30 PM'},
+  g67:{base:true,teams:[T('Inglaterra','gb-eng'),T('Croacia','hr')],date:'Mié 17 Jun · 2:00 PM'},
+  g68:{base:true,teams:[T('Ghana','gh'),T('Panamá','pa')],date:'Mié 17 Jun · 5:00 PM'},
+  g69:{base:true,teams:[T('Inglaterra','gb-eng'),T('Ghana','gh')],date:'Mar 23 Jun · 2:00 PM'},
+  g70:{base:true,teams:[T('Panamá','pa'),T('Croacia','hr')],date:'Mar 23 Jun · 5:00 PM'},
+  g71:{base:true,teams:[T('Panamá','pa'),T('Inglaterra','gb-eng')],date:'Sáb 27 Jun · 3:00 PM'},
+  g72:{base:true,teams:[T('Croacia','hr'),T('Ghana','gh')],date:'Sáb 27 Jun · 3:00 PM'},
   // ── 16avos (histórico) ──
   l_1:{base:true,teams:[T('Sudáfrica','za'),T('Canadá','ca')],date:'Dom 28 Jun · 1:00 PM'},
   l_2:{base:true,teams:[T('Países Bajos','nl'),T('Marruecos','ma')],date:'Lun 29 Jun · 7:00 PM'},
@@ -190,23 +263,26 @@ const MATCHDEF = {
   third:{base:true,teams:[T('Francia','fr'),T('Inglaterra','gb-eng')],date:'Sáb 18 Jul · 8:00 PM'},
 };
 
+const GRP_IDS = ['g1','g2','g3','g4','g5','g6','g7','g8','g9','g10','g11','g12','g13','g14','g15','g16','g17','g18','g19','g20','g21','g22','g23','g24','g25','g26','g27','g28','g29','g30','g31','g32','g33','g34','g35','g36','g37','g38','g39','g40','g41','g42','g43','g44','g45','g46','g47','g48','g49','g50','g51','g52','g53','g54','g55','g56','g57','g58','g59','g60','g61','g62','g63','g64','g65','g66','g67','g68','g69','g70','g71','g72'];
 const R32_IDS = ['l_1','l_2','l_3','l_4','l_5','l_6','l_7','l_8','r_1','r_2','r_3','r_4','r_5','r_6','r_7','r_8'];
 const OCT_IDS = ['lr16_1','lr16_2','lr16_3','lr16_4','rr16_1','rr16_2','rr16_3','rr16_4','lqf_1','lqf_2','rqf_1','rqf_2','lsf','rsf','final','third'];
-const ORDER = [...R32_IDS, ...OCT_IDS];
+const ORDER = [...GRP_IDS, ...R32_IDS, ...OCT_IDS];
 
 const ROUND_KEY = {};
 ORDER.forEach(id=>{
-  ROUND_KEY[id] = /^(l_|r_)\d/.test(id) ? 'r32'
+  ROUND_KEY[id] = /^g\d/.test(id) ? 'grp'
+    : /^(l_|r_)\d/.test(id) ? 'r32'
     : /16_/.test(id) ? 'r16'
     : /qf_/.test(id) ? 'qf'
     : /sf$/.test(id) ? 'sf' : 'fin';
 });
 function roundBadge(id){
   return id==='final' ? '🏆 FINAL' : id==='third' ? '🥉 3er lugar'
-    : ROUND_KEY[id]==='r32' ? '16avos' : ROUND_KEY[id]==='r16' ? 'Octavos'
+    : ROUND_KEY[id]==='grp' ? 'Grupos' : ROUND_KEY[id]==='r32' ? '16avos' : ROUND_KEY[id]==='r16' ? 'Octavos'
     : ROUND_KEY[id]==='qf' ? 'Cuartos' : 'Semifinal';
 }
 const ROUND_TABS = [
+  {key:'grp', label:'Grupos', ids:GRP_IDS},
   {key:'r32', label:'16avos', ids:R32_IDS},
   {key:'r16', label:'Octavos', ids:OCT_IDS.filter(id=>ROUND_KEY[id]==='r16')},
   {key:'qf',  label:'Cuartos', ids:OCT_IDS.filter(id=>ROUND_KEY[id]==='qf')},
@@ -237,30 +313,31 @@ ORDER.forEach(id=>{ if(MATCHDEF[id].base) MATCHDEF[id].teams.forEach(t=>NAME_TO_
 function flagOf(team, cls){ return team && team.f ? `<img class="${cls}" src="https://flagcdn.com/h40/${team.f}.png" alt="">` : ''; }
 
 // ── Participantes ──
+// grpp: picks de fase de grupos (72 chars), '' = no participó (picks reconstruidos desde grupos.html)
+// grps: marcadores de fase de grupos (72 pares)
 // r32p: picks de 16avos (16 chars), null si no participó en esa ronda
 // r32s: marcadores de 16avos (16 pares)
 // op: picks de octavos (8 chars), null = no enviado
 // os: marcadores de octavos (8 pares)
-// gp: [puntos, marcador exacto, resultado] de la quiniela de grupos (grupos.html), null si no participó
 const RAW = [
-  { name:'Susie',           r32p:'1000000000000000', r32s:[[0,2],[2,0],[3,0],[2,0],[2,0],[1,0],[1,0],[2,1],[2,1],[2,1],[2,0],[2,0],[1,0],[2,0],[2,0],[4,0]], op:'0111001111000000', os:[[2,1],[0,2],[1,2],[1,2],[1,0],[2,1],[0,1],[0,2],[1,2],[1,2],[2,1],[3,2],[2,1],[3,1],[3,2],[3,1]], gp:null },
-  { name:'Adrianna',        r32p:'1000000001000010', r32s:[[1,2],[2,1],[3,1],[2,1],[3,1],[1,0],[3,1],[2,1],[2,1],[0,1],[1,0],[2,1],[2,0],[2,1],[0,1],[2,1]], op:'0101011111010100', os:[[2,1],[1,3],[1,0],[2,3],[2,1],[1,2],[0,2],[0,3],[1,2],[1,3],[2,1],[1,2],[2,1],[2,3],[2,1],[2,1]], gp:[37,5,22] },
-  { name:'Erick',           r32p:'1000000111100010', r32s:[[0,2],[3,2],[2,1],[3,1],[2,1],[2,1],[2,1],[1,2],[1,2],[1,2],[1,2],[3,1],[2,0],[2,1],[1,2],[3,1]], op:'1110010111110011', os:[[1,2],[1,3],[1,2],[2,1],[2,1],[1,2],[2,1],[1,3],[2,3],[1,2],[1,2],[1,2],[2,1],[2,1],[1,2],[1,2]], gp:[55,7,34] },
-  { name:'Juan',            r32p:'1000000000100000', r32s:[[1,2],[1,0],[2,0],[2,0],[1,0],[2,1],[2,0],[1,0],[2,1],[1,0],[1,2],[3,1],[1,0],[1,0],[2,1],[3,1]], op:'1101011111110000', os:[[1,2],[0,2],[2,1],[1,2],[2,1],[0,2],[1,2],[0,3],[0,2],[0,1],[2,3],[0,2],[2,1],[2,1],[2,1],[2,1]], gp:[50,6,32] },
-  { name:'Canche',          r32p:'1100000001000000', r32s:[[1,2],[1,2],[2,1],[2,1],[2,1],[2,1],[2,1],[2,1],[2,1],[1,2],[2,1],[2,1],[2,1],[2,1],[2,1],[2,1]], op:'1110001111010110', os:[[1,2],[1,2],[1,2],[2,1],[2,1],[2,1],[1,2],[1,2],[1,2],[1,2],[2,1],[1,2],[2,1],[1,2],[1,2],[2,1]], gp:[43,5,28] },
-  { name:'Martín',          r32p:'1000000000100010', r32s:[[1,3],[2,1],[2,0],[3,1],[1,0],[2,1],[3,1],[2,1],[2,1],[1,0],[0,1],[2,1],[2,1],[1,0],[1,2],[3,1]], op:'1101011111110000', os:[[1,2],[0,2],[2,1],[1,2],[2,1],[0,2],[1,2],[1,3],[0,2],[1,3],[1,2],[0,2],[2,1],[2,1],[3,2],[2,1]], gp:[39,1,36] },
-  { name:'Alhvi',           r32p:'1100100100100000', r32s:[[1,2],[1,2],[3,2],[3,2],[1,2],[2,1],[3,2],[5,7],[3,2],[2,1],[1,3],[2,0],[2,1],[2,1],[2,1],[3,1]], op:'1110011100010010', os:[[1,3],[1,2],[1,2],[3,1],[3,2],[2,3],[2,3],[1,2],[2,1],[2,1],[2,1],[0,2],[2,1],[2,1],[2,3],[2,1]], gp:[44,4,32] },
-  { name:'Mónica',          r32p:'1000000000100010', r32s:[[1,2],[3,2],[3,2],[2,1],[2,1],[2,1],[2,1],[2,1],[2,1],[2,1],[1,2],[2,1],[2,1],[2,1],[1,2],[3,1]], op:'0001001011110110', os:[[2,1],[3,2],[2,1],[3,4],[3,2],[2,1],[2,3],[3,2],[1,2],[1,2],[1,2],[1,2],[2,1],[1,2],[1,2],[2,1]], gp:null },
-  { name:'Camila',          r32p:'1100110001101010', r32s:[[0,2],[1,2],[2,0],[3,1],[1,2],[1,2],[2,1],[2,0],[2,0],[1,3],[1,2],[2,1],[1,2],[1,0],[1,2],[4,0]], op:'1111110111010111', os:[[1,2],[1,3],[1,2],[1,2],[1,2],[1,2],[2,0],[1,3],[1,2],[1,2],[3,1],[1,2],[3,1],[2,3],[1,2],[1,2]], gp:null },
-  { name:'Ricky',           r32p:'1100100000000110', r32s:[[0,2],[0,1],[3,1],[4,2],[2,3],[2,1],[2,0],[1,0],[2,1],[2,1],[2,1],[3,0],[1,0],[0,1],[0,1],[3,1]], op:'1100011111110111', os:[[0,2],[1,2],[2,1],[3,1],[3,2],[1,2],[1,2],[2,3],[1,2],[0,1],[2,3],[1,3],[3,2],[2,3],[2,3],[1,2]], gp:[45,4,33] },
-  { name:'Chichi',          r32p:'1000000001000010', r32s:[[0,2],[2,1],[2,0],[1,0],[3,1],[2,0],[3,2],[3,1],[3,1],[1,2],[2,1],[3,1],[2,0],[2,0],[1,2],[3,1]], op:'1101011100010111', os:[[1,2],[1,2],[2,1],[1,2],[2,1],[1,2],[1,2],[1,2],[2,1],[3,2],[2,1],[1,2],[2,1],[1,2],[1,2],[1,2]], gp:null },
-  { name:'Claude',          r32p:'1000000001000010', r32s:[[1,2],[2,1],[2,0],[3,1],[2,1],[2,0],[2,0],[2,1],[3,1],[1,2],[2,1],[3,0],[2,1],[2,0],[0,1],[3,0]], op:'1100011111110110', os:[[1,2],[0,2],[2,1],[2,1],[3,1],[1,2],[1,2],[0,2],[1,3],[1,2],[1,2],[0,2],[2,1],[1,2],[1,2],[2,1]], gp:[59,8,35] },
-  { name:'Patricia y Marco',r32p:'',                 r32s:[],                                                                                                 op:'1111011111111111', os:[[1,3],[1,4],[1,2],[2,3],[2,0],[1,2],[1,2],[1,2],[1,2],[2,3],[1,2],[1,2],[0,2],[0,1],[1,2],[1,2]], gp:[40,4,28] },
-  { name:'Carol Cajas',     r32p:'',                 r32s:[],                                                                                                 op:'11101111110100', os:[[1,2],[0,2],[3,4],[2,1],[1,3],[1,2],[1,2],[1,2],[2,3],[2,3],[3,2],[1,3],[3,2],[3,2]], gp:null },
-  { name:'Dianis',          r32p:'',                 r32s:[],                                                                                                 op:'1100010111011010', os:[[1,2],[1,2],[2,1],[2,1],[2,1],[0,2],[2,1],[1,2],[1,2],[0,2],[2,1],[1,2],[1,2],[2,1],[1,3],[3,2]], gp:null },
-  { name:'Alvaro',          r32p:'',                 r32s:[],                                                                                                 op:'111101111101xx10', os:[[0,1],[1,2],[0,1],[0,1],[1,0],[1,2],[1,2],[0,3],[1,2],[2,3],[3,2],[0,3],[null,null],[null,null],[2,3],[2,0]], gp:[40,3,31] },
-  // Wash: nuevo desde cuartos, sin picks de 16avos/octavos ('x' = sin pick, no cuenta puntos en esas rondas)
-  { name:'Wash',            r32p:'',                 r32s:[],                                                                                                 op:'xxxxxxxx1101', os:[null,null,null,null,null,null,null,null,[2,3],[1,2],[1,0],[0,3]], gp:null },
+  { name:'Susie',           grpp:'', grps:[], r32p:'1000000000000000', r32s:[[0,2],[2,0],[3,0],[2,0],[2,0],[1,0],[1,0],[2,1],[2,1],[2,1],[2,0],[2,0],[1,0],[2,0],[2,0],[4,0]], op:'0111001111000000', os:[[2,1],[0,2],[1,2],[1,2],[1,0],[2,1],[0,1],[0,2],[1,2],[1,2],[2,1],[3,2],[2,1],[3,1],[3,2],[3,1]] },
+  { name:'Adrianna',        grpp:'000010010001001010000010010000001011010011010000000010001011010010010000', grps:[[1,0],[0,0],[2,0],[2,1],[0,2],[1,1],[2,1],[1,2],[2,0],[1,1],[3,2],[1,2],[3,1],[1,1],[0,1],[2,1],[0,2],[1,1],[2,2],[1,1],[2,1],[2,2],[1,2],[2,2],[3,0],[1,2],[2,1],[2,2],[1,1],[1,1],[2,0],[1,1],[1,2],[2,0],[1,2],[2,3],[1,1],[1,2],[2,1],[2,1],[2,3],[1,2],[3,1],[1,3],[2,1],[2,1],[2,2],[1,0],[2,0],[1,1],[2,0],[1,1],[1,3],[1,1],[2,1],[0,0],[2,3],[1,1],[1,3],[1,2],[3,1],[1,2],[2,0],[2,1],[2,3],[2,1],[2,2],[1,2],[2,1],[2,2],[2,2],[2,1]], r32p:'1000000001000010', r32s:[[1,2],[2,1],[3,1],[2,1],[3,1],[1,0],[3,1],[2,1],[2,1],[0,1],[1,0],[2,1],[2,0],[2,1],[0,1],[2,1]], op:'0101011111010100', os:[[2,1],[1,3],[1,0],[2,3],[2,1],[1,2],[0,2],[0,3],[1,2],[1,3],[2,1],[1,2],[2,1],[2,3],[2,1],[2,1]] },
+  { name:'Erick',           grpp:'010001010000111010010010000011000101000110010011010000000010010000000110', grps:[[1,1],[1,2],[2,1],[2,2],[1,1],[1,2],[2,0],[1,2],[2,0],[2,1],[2,1],[1,1],[1,2],[0,2],[1,2],[2,0],[1,2],[4,0],[2,1],[1,2],[2,1],[1,1],[1,2],[2,1],[3,0],[1,1],[2,1],[2,1],[1,2],[0,2],[2,2],[1,1],[3,1],[1,2],[2,1],[0,2],[2,0],[1,1],[2,1],[1,2],[0,3],[1,1],[3,0],[1,2],[2,1],[2,0],[1,2],[1,2],[2,1],[0,3],[3,0],[2,1],[2,2],[2,1],[2,0],[1,1],[1,0],[1,1],[0,2],[1,1],[2,0],[0,2],[3,0],[2,0],[2,2],[1,1],[2,1],[2,0],[2,2],[1,2],[0,2],[1,1]], r32p:'1000000111100010', r32s:[[0,2],[3,2],[2,1],[3,1],[2,1],[2,1],[2,1],[1,2],[1,2],[1,2],[1,2],[3,1],[2,0],[2,1],[1,2],[3,1]], op:'1110010111110011', os:[[1,2],[1,3],[1,2],[2,1],[2,1],[1,2],[2,1],[1,3],[2,3],[1,2],[1,2],[1,2],[2,1],[2,1],[1,2],[1,2]] },
+  { name:'Juan',            grpp:'110100110000011010110000010010000111000110010001010010000011010010000110', grps:[[0,1],[0,1],[2,1],[0,1],[2,1],[1,0],[0,1],[0,1],[1,0],[2,0],[1,0],[1,0],[1,0],[0,2],[0,2],[3,0],[1,2],[3,0],[0,1],[0,2],[1,0],[2,1],[2,0],[1,0],[4,0],[0,1],[3,0],[2,0],[0,3],[0,0],[2,1],[2,0],[2,1],[0,1],[1,2],[1,3],[3,1],[1,1],[3,1],[1,2],[0,3],[2,1],[4,0],[0,2],[3,0],[2,1],[1,1],[0,2],[2,0],[0,1],[3,0],[1,0],[1,3],[0,0],[3,1],[1,0],[2,1],[1,1],[0,3],[1,2],[3,1],[0,2],[3,0],[2,0],[1,2],[0,0],[2,2],[1,0],[2,1],[1,3],[0,3],[2,1]], r32p:'1000000000100000', r32s:[[1,2],[1,0],[2,0],[2,0],[1,0],[2,1],[2,0],[1,0],[2,1],[1,0],[1,2],[3,1],[1,0],[1,0],[2,1],[3,1]], op:'1101011111110000', os:[[1,2],[0,2],[2,1],[1,2],[2,1],[0,2],[1,2],[0,3],[0,2],[0,1],[2,3],[0,2],[2,1],[2,1],[2,1],[2,1]] },
+  { name:'Canche',          grpp:'000010000011000010000110000010000001000000010000000010000010010000000010', grps:[[2,1],[1,1],[1,1],[2,1],[1,2],[1,1],[2,1],[2,1],[1,1],[1,1],[1,2],[1,2],[2,1],[1,1],[1,1],[2,1],[1,2],[1,1],[1,1],[1,1],[2,1],[1,2],[1,2],[2,1],[2,1],[1,1],[2,1],[1,1],[1,2],[1,1],[2,1],[1,1],[2,1],[1,1],[1,1],[1,2],[1,1],[1,1],[1,1],[1,1],[1,1],[1,1],[2,1],[1,2],[2,1],[2,1],[1,1],[1,1],[2,1],[1,1],[2,1],[1,1],[1,2],[1,1],[2,1],[1,1],[2,1],[1,1],[1,2],[1,1],[2,1],[1,2],[2,1],[2,1],[1,1],[1,1],[2,1],[1,1],[2,1],[1,1],[1,2],[1,1]], r32p:'1100000001000000', r32s:[[1,2],[1,2],[2,1],[2,1],[2,1],[2,1],[2,1],[2,1],[2,1],[1,2],[2,1],[2,1],[2,1],[2,1],[2,1],[2,1]], op:'1110001111010110', os:[[1,2],[1,2],[1,2],[2,1],[2,1],[2,1],[1,2],[1,2],[1,2],[1,2],[2,1],[1,2],[2,1],[1,2],[1,2],[2,1]] },
+  { name:'Martín',          grpp:'101000010000111000010000010011000101000110010011010000000011010001000110', grps:[[0,1],[0,0],[0,2],[3,1],[2,1],[3,3],[2,0],[1,3],[3,2],[4,2],[2,2],[1,0],[2,3],[4,5],[1,2],[3,0],[2,2],[1,0],[0,0],[1,2],[1,0],[2,0],[3,3],[3,1],[4,1],[1,2],[6,2],[2,2],[1,2],[0,1],[2,1],[1,1],[2,0],[1,3],[3,2],[0,2],[2,1],[0,0],[2,0],[0,1],[1,3],[2,2],[4,0],[1,3],[2,0],[2,0],[1,2],[0,1],[4,3],[1,3],[4,2],[3,3],[2,2],[1,0],[2,0],[2,1],[4,1],[1,0],[1,4],[1,2],[2,0],[2,4],[3,1],[2,1],[1,1],[0,1],[4,3],[2,2],[3,2],[1,2],[0,1],[2,2]], r32p:'1000000000100010', r32s:[[1,3],[2,1],[2,0],[3,1],[1,0],[2,1],[3,1],[2,1],[2,1],[1,0],[0,1],[2,1],[2,1],[1,0],[1,2],[3,1]], op:'1101011111110000', os:[[1,2],[0,2],[2,1],[1,2],[2,1],[0,2],[1,2],[1,3],[0,2],[1,3],[1,2],[0,2],[2,1],[2,1],[3,2],[2,1]] },
+  { name:'Alhvi',           grpp:'010000010001010010001000010010000111000010010000010010000111010010010110', grps:[[1,0],[0,2],[1,1],[2,1],[3,1],[2,2],[2,1],[0,3],[3,1],[2,1],[2,0],[1,2],[3,2],[0,3],[2,1],[3,0],[1,4],[2,1],[2,1],[0,0],[1,2],[3,1],[2,2],[1,1],[3,1],[1,2],[4,1],[2,0],[1,2],[1,1],[2,1],[2,1],[3,3],[1,2],[1,2],[0,2],[2,1],[1,1],[2,1],[2,2],[1,3],[1,1],[2,1],[0,3],[4,2],[3,1],[2,2],[1,0],[4,1],[1,2],[3,1],[2,1],[1,2],[0,0],[2,1],[2,1],[2,2],[0,1],[0,3],[1,2],[2,1],[0,2],[2,1],[1,1],[1,3],[0,0],[3,2],[1,2],[3,0],[2,3],[1,3],[2,1]], r32p:'1100100100100000', r32s:[[1,2],[1,2],[3,2],[3,2],[1,2],[2,1],[3,2],[5,7],[3,2],[2,1],[1,3],[2,0],[2,1],[2,1],[2,1],[3,1]], op:'1110011100010010', os:[[1,3],[1,2],[1,2],[3,1],[3,2],[2,3],[2,3],[1,2],[2,1],[2,1],[2,1],[0,2],[2,1],[2,1],[2,3],[2,1]] },
+  { name:'Mónica',          grpp:'', grps:[], r32p:'1000000000100010', r32s:[[1,2],[3,2],[3,2],[2,1],[2,1],[2,1],[2,1],[2,1],[2,1],[2,1],[1,2],[2,1],[2,1],[2,1],[1,2],[3,1]], op:'0001001011110110', os:[[2,1],[3,2],[2,1],[3,4],[3,2],[2,1],[2,3],[3,2],[1,2],[1,2],[1,2],[1,2],[2,1],[1,2],[1,2],[2,1]] },
+  { name:'Camila',          grpp:'', grps:[], r32p:'1100110001101010', r32s:[[0,2],[1,2],[2,0],[3,1],[1,2],[1,2],[2,1],[2,0],[2,0],[1,3],[1,2],[2,1],[1,2],[1,0],[1,2],[4,0]], op:'1111110111010111', os:[[1,2],[1,3],[1,2],[1,2],[1,2],[1,2],[2,0],[1,3],[1,2],[1,2],[3,1],[1,2],[3,1],[2,3],[1,2],[1,2]] },
+  { name:'Ricky',           grpp:'000000000010011010001011010011000101000010010011010010000010010011000110', grps:[[2,1],[1,1],[2,1],[2,0],[1,1],[2,1],[2,0],[2,0],[1,0],[2,1],[0,1],[1,1],[2,1],[0,2],[0,1],[3,0],[0,2],[2,0],[2,0],[1,1],[1,2],[2,0],[0,1],[1,2],[3,0],[1,2],[2,0],[3,0],[1,2],[0,2],[2,0],[1,0],[2,1],[0,1],[1,1],[1,2],[2,0],[3,0],[1,0],[1,1],[1,2],[0,0],[2,0],[0,2],[2,0],[3,0],[1,2],[0,1],[3,0],[0,2],[2,0],[1,1],[0,2],[1,1],[2,0],[2,1],[2,1],[1,1],[0,2],[1,1],[2,0],[0,1],[3,0],[1,1],[1,2],[0,2],[2,2],[1,1],[2,0],[0,2],[1,3],[2,0]], r32p:'1100100000000110', r32s:[[0,2],[0,1],[3,1],[4,2],[2,3],[2,1],[2,0],[1,0],[2,1],[2,1],[2,1],[3,0],[1,0],[0,1],[0,1],[3,1]], op:'1100011111110111', os:[[0,2],[1,2],[2,1],[3,1],[3,2],[1,2],[1,2],[2,3],[1,2],[0,1],[2,3],[1,3],[3,2],[2,3],[2,3],[1,2]] },
+  { name:'Chichi',          grpp:'', grps:[], r32p:'1000000001000010', r32s:[[0,2],[2,1],[2,0],[1,0],[3,1],[2,0],[3,2],[3,1],[3,1],[1,2],[2,1],[3,1],[2,0],[2,0],[1,2],[3,1]], op:'1101011100010111', os:[[1,2],[1,2],[2,1],[1,2],[2,1],[1,2],[1,2],[1,2],[2,1],[3,2],[2,1],[1,2],[2,1],[1,2],[1,2],[1,2]] },
+  { name:'Claude',          grpp:'000010010000001010000000000011000101000011000000010010000011010000000110', grps:[[2,1],[1,1],[2,0],[1,0],[1,2],[1,1],[2,1],[0,2],[2,1],[2,0],[1,0],[2,1],[2,1],[2,0],[0,2],[4,0],[1,3],[2,0],[2,1],[1,1],[2,0],[1,1],[1,1],[2,1],[4,0],[1,1],[3,1],[3,0],[1,2],[0,2],[2,1],[2,1],[2,0],[1,2],[2,1],[0,2],[2,0],[2,0],[2,1],[1,1],[0,3],[1,2],[3,0],[1,1],[2,0],[2,0],[1,1],[1,1],[2,1],[0,2],[3,0],[2,1],[1,2],[2,0],[3,0],[2,0],[2,0],[1,1],[0,3],[1,2],[3,0],[0,2],[3,1],[2,0],[1,1],[1,1],[2,1],[2,0],[2,0],[0,2],[0,3],[2,1]], r32p:'1000000001000010', r32s:[[1,2],[2,1],[2,0],[3,1],[2,1],[2,0],[2,0],[2,1],[3,1],[1,2],[2,1],[3,0],[2,1],[2,0],[0,1],[3,0]], op:'1100011111110110', os:[[1,2],[0,2],[2,1],[2,1],[3,1],[1,2],[1,2],[0,2],[1,3],[1,2],[1,2],[0,2],[2,1],[1,2],[1,2],[2,1]] },
+  { name:'Patricia y Marco',grpp:'000010010000000010000110000011001100010011010000000010000011010011010110', grps:[[2,1],[1,1],[1,0],[1,0],[1,2],[0,0],[3,3],[1,2],[2,2],[1,0],[2,2],[1,0],[2,2],[1,0],[2,2],[3,1],[0,2],[1,1],[3,2],[2,0],[2,2],[0,2],[1,3],[1,1],[2,1],[2,2],[1,0],[2,1],[2,3],[1,2],[2,2],[1,1],[1,2],[0,1],[2,0],[1,1],[3,2],[1,2],[3,1],[1,0],[1,2],[0,1],[2,0],[1,2],[2,1],[2,2],[3,2],[1,0],[2,1],[1,1],[2,1],[1,1],[1,3],[0,0],[2,0],[1,1],[2,1],[0,0],[1,2],[0,1],[3,1],[0,2],[2,1],[2,2],[2,3],[0,1],[1,1],[1,2],[2,0],[2,3],[1,2],[2,0]], r32p:'',                 r32s:[],                                                                                                 op:'1111011111111111', os:[[1,3],[1,4],[1,2],[2,3],[2,0],[1,2],[1,2],[1,2],[1,2],[2,3],[1,2],[1,2],[0,2],[0,1],[1,2],[1,2]] },
+  { name:'Carol Cajas',     grpp:'', grps:[], r32p:'',                 r32s:[],                                                                                                 op:'11101111110100', os:[[1,2],[0,2],[3,4],[2,1],[1,3],[1,2],[1,2],[1,2],[2,3],[2,3],[3,2],[1,3],[3,2],[3,2]] },
+  { name:'Dianis',          grpp:'', grps:[], r32p:'',                 r32s:[],                                                                                                 op:'1100010111011010', os:[[1,2],[1,2],[2,1],[2,1],[2,1],[0,2],[2,1],[1,2],[1,2],[0,2],[2,1],[1,2],[1,2],[2,1],[1,3],[3,2]] },
+  { name:'Alvaro',          grpp:'011010010000010010000100000010000111010000010001010010000011010000000110', grps:[[1,1],[0,1],[1,2],[2,0],[1,2],[1,1],[0,0],[0,1],[2,1],[1,1],[2,2],[1,1],[2,1],[0,1],[0,0],[4,0],[1,2],[3,0],[1,1],[0,0],[2,0],[1,2],[1,1],[2,0],[2,0],[1,1],[3,1],[1,1],[1,2],[0,0],[2,1],[1,1],[2,2],[1,3],[0,1],[0,3],[2,1],[0,1],[1,0],[0,0],[2,2],[1,0],[3,1],[0,2],[2,1],[3,0],[1,1],[1,2],[2,0],[1,2],[3,1],[1,1],[1,2],[1,0],[2,0],[1,0],[2,1],[0,0],[0,3],[0,1],[1,0],[0,2],[2,0],[3,0],[2,2],[1,0],[1,1],[1,0],[2,0],[0,2],[0,3],[1,0]], r32p:'',                 r32s:[],                                                                                                 op:'111101111101xx10', os:[[0,1],[1,2],[0,1],[0,1],[1,0],[1,2],[1,2],[0,3],[1,2],[2,3],[3,2],[0,3],[null,null],[null,null],[2,3],[2,0]] },
+  // Wash: nuevo desde cuartos, sin picks de grupos/16avos/octavos ('x' = sin pick, no cuenta puntos en esas rondas)
+  { name:'Wash',            grpp:'', grps:[], r32p:'',                 r32s:[],                                                                                                 op:'xxxxxxxx1101', os:[null,null,null,null,null,null,null,null,[2,3],[1,2],[1,0],[0,3]] },
 ];
 
 // ── Bracket logic ──
@@ -280,6 +357,14 @@ function makeBracket(picks){
 }
 
 const PARTICIPANTS = RAW.map(p=>{
+  let grpbr = null, grpsc = {};
+  if(p.grpp){
+    const grppicksObj = {};
+    GRP_IDS.forEach((id,i) => grppicksObj[id] = +p.grpp[i]);
+    GRP_IDS.forEach((id,i) => grpsc[id] = p.grps[i]);
+    grpbr = makeBracket(grppicksObj);
+  }
+
   let r32br = null, r32sc = {};
   if(p.r32p){
     const r32picksObj = {};
@@ -296,7 +381,7 @@ const PARTICIPANTS = RAW.map(p=>{
     OCT_IDS.forEach((id,i) => octsc[id] = p.os[i] || [null,null]);
     octbr = makeBracket(octpObj);
   }
-  return {name:p.name, r32br, r32sc, octbr, octsc, gp:p.gp};
+  return {name:p.name, grpbr, grpsc, r32br, r32sc, octbr, octsc};
 });
 
 // ════════════ ESTADO REAL (API) ════════════
@@ -314,6 +399,11 @@ const EN_TO_ES = {
   'England':'Inglaterra','DR Congo':'RD Congo','Congo DR':'RD Congo','Democratic Republic of the Congo':'RD Congo',
   'Switzerland':'Suiza','Algeria':'Argelia','Colombia':'Colombia','Ghana':'Ghana','Australia':'Australia',
   'Egypt':'Egipto','Argentina':'Argentina','Cape Verde':'Cabo Verde','Cape Verde Islands':'Cabo Verde',
+  'South Korea':'Corea del Sur','Korea Republic':'Corea del Sur','Czech Republic':'Chequia','Czechia':'Chequia',
+  'Qatar':'Qatar','Haiti':'Haití','Scotland':'Escocia','Turkey':'Turquía','Türkiye':'Turquía',
+  'Curacao':'Curazao','Curaçao':'Curazao','Tunisia':'Túnez','Iran':'Irán','IR Iran':'Irán',
+  'New Zealand':'Nueva Zelanda','Saudi Arabia':'Arabia Saudita','Uruguay':'Uruguay','Iraq':'Irak',
+  'Jordan':'Jordania','Uzbekistan':'Uzbekistán','Panama':'Panamá','Panamá':'Panamá',
 };
 function resolveTeam(n){ return EN_TO_ES[n] || n; }
 const sameSet = (a,b)=> a[0]&&a[1]&&b[0]&&b[1] && ((a[0].n===b[0].n&&a[1].n===b[1].n)||(a[0].n===b[1].n&&a[1].n===b[0].n));
@@ -387,9 +477,21 @@ function setLbTab(tab){
   saveTabState();
 }
 
+function matchResult(h,a){ return h>a?'H' : a>h?'A' : 'D'; }
+
 function pointsFor(p, id){
   const real = apiReal[id];
   if(!real || real.h==null) return null;
+
+  // Grupos: comparación directa de marcador (admite empates, sin lógica de bracket/ganador)
+  if(ROUND_KEY[id]==='grp'){
+    const sc = p.grpsc; if(!sc) return null;
+    const ps = sc[id];
+    if(!ps || ps[0]==null || ps[1]==null) return null;
+    if(ps[0]===real.h && ps[1]===real.a) return 3;
+    return matchResult(ps[0],ps[1])===matchResult(real.h,real.a) ? 1 : 0;
+  }
+
   const rc = realBracket.cand[id], rw = realBracket.win[id];
   if(!rw) return 0;
 
@@ -412,9 +514,9 @@ function pointsFor(p, id){
 
 function getTotals(){
   return PARTICIPANTS.map(p=>{
-    const byRound = {r32:0, r16:0, qf:0, sf:0, fin:0};
-    const exactBy = {r32:0, r16:0, qf:0, sf:0, fin:0};
-    const resultBy = {r32:0, r16:0, qf:0, sf:0, fin:0};
+    const byRound = {grp:0, r32:0, r16:0, qf:0, sf:0, fin:0};
+    const exactBy = {grp:0, r32:0, r16:0, qf:0, sf:0, fin:0};
+    const resultBy = {grp:0, r32:0, r16:0, qf:0, sf:0, fin:0};
     ORDER.forEach(id=>{
       const n = pointsFor(p, id);
       const rk = ROUND_KEY[id];
@@ -428,7 +530,7 @@ function getTotals(){
     const champ = p.octbr ? p.octbr.win['final'] : null;
     const totalPts = r32pts+octPlusPts;
     const totalExact = exactBy.r32+sumOf(exactBy), totalResult = resultBy.r32+sumOf(resultBy);
-    const [gPts, gExact, gResult] = p.gp || [0,0,0];
+    const gPts = byRound.grp, gExact = exactBy.grp, gResult = resultBy.grp;
     return {
       pts: totalPts, r32pts, r16pts, octPlusPts, champ,
       r32Exact: exactBy.r32, r32Result: resultBy.r32,
@@ -511,14 +613,15 @@ function realScoreRow(id){
 }
 
 function buildPreds(id){
-  const isR32 = R32_IDS.includes(id);
-  const visible = PARTICIPANTS.filter(p => isR32 ? !!p.r32br : !!p.octbr);
-  if(!isR32 && visible.length === 0){
+  const rk = ROUND_KEY[id];
+  const isGrp = rk==='grp', isR32 = rk==='r32';
+  const visible = PARTICIPANTS.filter(p => isGrp ? !!p.grpbr : isR32 ? !!p.r32br : !!p.octbr);
+  if(!isGrp && !isR32 && visible.length === 0){
     return `<div class="no-oct">Nadie ha enviado picks de octavos todavía.</div>`;
   }
   return visible.map(p=>{
-    const br = isR32 ? p.r32br : p.octbr;
-    const sc = isR32 ? p.r32sc : p.octsc;
+    const br = isGrp ? p.grpbr : isR32 ? p.r32br : p.octbr;
+    const sc = isGrp ? p.grpsc : isR32 ? p.r32sc : p.octsc;
     const pc = br.cand[id], ps = sc[id];
     if(!pc[0] || !pc[1]) return '';
     if(ps[0]==null || ps[1]==null) return '';
@@ -534,13 +637,14 @@ function buildPreds(id){
 }
 
 function buildCard(id){
-  const isR32 = R32_IDS.includes(id);
+  const rk = ROUND_KEY[id];
+  const isGrp = rk==='grp', isR32 = rk==='r32';
   const isLive = apiReal[id] && (apiReal[id].status==='in_progress'||apiReal[id].status==='live'||apiReal[id].status==='in_play'||apiReal[id].status==='paused');
   const isFinished = apiReal[id] && (apiReal[id].status==='finished'||apiReal[id].status==='completed'||apiReal[id].status==='ft');
   let badge = '';
   if(isLive) badge = `<span class="status-badge live">🔴 EN VIVO</span>`;
   else if(isFinished) badge = `<span class="status-badge finished">✓ Final</span>`;
-  const cls = `match-card${id==='final'?' final-card':id==='third'?' third-card':isR32?' r32-card':''}`;
+  const cls = `match-card${id==='final'?' final-card':id==='third'?' third-card':(isR32||isGrp)?' r32-card':''}`;
   return `<div class="${cls}" data-mid="${id}">
     <div class="card-meta">
       <span>${META[id].dateLabel} · ${META[id].time}</span>
@@ -549,7 +653,7 @@ function buildCard(id){
     </div>
     ${realScoreRow(id)}
     <div class="preds-section">
-      <div class="preds-title">Predicciones${isR32?' (16avos)':''}</div>
+      <div class="preds-title">Predicciones${isGrp?' (Grupos)':isR32?' (16avos)':''}</div>
       <div class="k-preds">${buildPreds(id)}</div>
     </div>
   </div>`;
